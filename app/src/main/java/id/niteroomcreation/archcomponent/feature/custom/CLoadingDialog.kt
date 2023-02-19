@@ -18,7 +18,6 @@ class CLoadingDialog {
 
         private lateinit var dialog: Dialog
 
-
         fun progressDialog(context: Context): Dialog {
             dialog = Dialog(context)
             val inflate = LayoutInflater.from(context).inflate(R.layout.c_loading, null)

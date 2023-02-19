@@ -1,67 +1,52 @@
-package id.niteroomcreation.archcomponent.feature.empty;
+package id.niteroomcreation.archcomponent.feature.empty
 
-import android.os.Bundle;
-import android.view.View;
-
-import id.niteroomcreation.archcomponent.R;
-import id.niteroomcreation.archcomponent.base.BaseFragment;
-import id.niteroomcreation.archcomponent.databinding.FEmptyBinding;
+import android.os.Bundle
+import id.niteroomcreation.archcomponent.R
+import id.niteroomcreation.archcomponent.base.BaseFragment
+import id.niteroomcreation.archcomponent.databinding.FEmptyBinding
 
 /**
  * Created by Septian Adi Wijaya on 21/06/2021.
  * please be sure to add credential if you use people's code
  */
-public class EmptyFragment extends BaseFragment<FEmptyBinding, EmptyViewModel> {
+class EmptyFragment : BaseFragment<FEmptyBinding, EmptyViewModel>() {
 
-    public static final String TAG = EmptyFragment.class.getSimpleName();
-    private EmptyListener mListener;
+    companion object {
+        val TAG = EmptyFragment::class.java.simpleName
 
-    public static EmptyFragment newInstance(String msg, EmptyListener mListener) {
-        EmptyFragment f = new EmptyFragment();
-
-        Bundle b = new Bundle();
-        b.putString("txt", msg);
-
-        f.setArguments(b);
-        f.setListener(mListener);
-        return f;
+        fun newInstance(msg: String?, mListener: EmptyListener): EmptyFragment {
+            val f = EmptyFragment()
+            val b = Bundle()
+            b.putString("txt", msg)
+            f.arguments = b
+            f.setListener(mListener)
+            return f
+        }
     }
 
-    private void setListener(EmptyListener mListener) {
-        this.mListener = mListener;
+    private lateinit var mListener: EmptyListener
+    private fun setListener(mListener: EmptyListener) {
+        this.mListener = mListener
     }
 
-    @Override
-    public int getLayoutId() {
-        return R.layout.f_empty;
-    }
+    override val layoutId: Int = R.layout.f_empty
+    override val bindingVariable: Int = 0
 
-    @Override
-    public int getBindingVariable() {
-        return 0;
-    }
-
-    @Override
-    public void initUI() {
-        if (getArguments() != null && getArguments().getString("txt") != null) {
-            getViewDataBinding().sTvFooter.setText(getArguments().getString("txt"));
+    override fun initUI() {
+        if (arguments != null && arguments?.getString("txt") != null) {
+            mViewBinding.sTvFooter.text = arguments?.getString("txt")
         }
 
-        setupObserver();
-        getViewDataBinding().sWrapFooter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onEmptyClickedView();
-            }
-        });
+        setupObserver()
+
+        mViewBinding.sWrapFooter.setOnClickListener { mListener.onEmptyClickedView() }
     }
 
-    private void setupObserver() {
-        mViewModel = obtainViewModel(this, EmptyViewModel.class);
-
+    private fun setupObserver() {
+        mViewModel = obtainViewModel(this, EmptyViewModel::class.java)
     }
 
-    public interface EmptyListener {
-        void onEmptyClickedView();
+    interface EmptyListener {
+        fun onEmptyClickedView()
     }
 }

@@ -70,10 +70,21 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel> :
     }
 
     override fun showLoading() {
-        mLoading.show()
+        mLoading.setTitle("")
+        mLoading.setCancelable(false)
+        mLoading.setCanceledOnTouchOutside(false)
+
+        runOnUiThread {
+
+            if (!mLoading.isShowing)
+                mLoading.show()
+        }
     }
 
     override fun dismissLoading() {
-        mLoading.dismiss()
+        runOnUiThread {
+            if (mLoading.isShowing)
+                mLoading.dismiss()
+        }
     }
 }

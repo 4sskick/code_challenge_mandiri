@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.niteroomcreation.archcomponent.R
 import id.niteroomcreation.archcomponent.base.BaseFragment
 import id.niteroomcreation.archcomponent.databinding.FMoviesBinding
-import id.niteroomcreation.archcomponent.feature.movies.MoviesFragment
 import id.niteroomcreation.archcomponent.util.LogHelper
 import id.niteroomcreation.archcomponent.util.vo.Status
 
@@ -29,11 +28,8 @@ class MoviesFragment : BaseFragment<FMoviesBinding, MoviesViewModel>() {
     private lateinit var adapter: MoviesAdapter
     private var mListener: MoviesListener? = null
 
-    override val layoutId: Int
-        get() = R.layout.f_movies
-
-    override val bindingVariable: Int
-        get() = 0
+    override val layoutId: Int = R.layout.f_movies
+    override val bindingVariable: Int = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -54,16 +50,15 @@ class MoviesFragment : BaseFragment<FMoviesBinding, MoviesViewModel>() {
 
     private fun setupObserver() {
         mViewModel = obtainViewModel(this, MoviesViewModel::class.java)
-        mViewModel?.movies?.observe(this, Observer { data ->
+        mViewModel!!.movies.observe(this, Observer { data ->
 
             LogHelper.e(TAG, data, data.message)
 
             if (data.data != null) {
                 when (data.status) {
                     Status.SUCCESS -> {
-//                        dismissLoading()
+                        dismissLoading()
                         adapter.submitList(data.data)
-                        adapter.notifyDataSetChanged()
                     }
                     Status.LOADING -> {
                         showLoading()
@@ -86,8 +81,8 @@ class MoviesFragment : BaseFragment<FMoviesBinding, MoviesViewModel>() {
     private fun setupAdapter() {
         adapter = MoviesAdapter()
 
-        viewDataBinding?.listMovie?.layoutManager = LinearLayoutManager(context)
-        viewDataBinding?.listMovie?.adapter = adapter
+        mViewBinding?.listMovie?.layoutManager = LinearLayoutManager(context)
+        mViewBinding?.listMovie?.adapter = adapter
     }
 
     interface MoviesListener {

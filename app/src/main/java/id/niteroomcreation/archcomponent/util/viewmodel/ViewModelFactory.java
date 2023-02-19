@@ -13,10 +13,8 @@ import id.niteroomcreation.archcomponent.domain.repositories.Repository;
 import id.niteroomcreation.archcomponent.feature.dashboard.DashboardViewModel;
 import id.niteroomcreation.archcomponent.feature.detail.DetailViewModel;
 import id.niteroomcreation.archcomponent.feature.empty.EmptyViewModel;
-import id.niteroomcreation.archcomponent.feature.favourite.FavViewModel;
 import id.niteroomcreation.archcomponent.feature.movies.MoviesViewModel;
 import id.niteroomcreation.archcomponent.feature.splash.SplashViewModel;
-import id.niteroomcreation.archcomponent.feature.tv_shows.TvViewModel;
 
 /**
  * Created by Septian Adi Wijaya on 26/05/2021.
@@ -55,11 +53,7 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             return (T) new MoviesViewModel(repository);
         } else if (modelClass.isAssignableFrom(SplashViewModel.class)) {
             return (T) new SplashViewModel(repository);
-        } else if (modelClass.isAssignableFrom(TvViewModel.class)) {
-            return (T) new TvViewModel(repository);
-        } else if (modelClass.isAssignableFrom(FavViewModel.class))
-            return (T) new FavViewModel(repository);
-        else if (modelClass.isAssignableFrom(EmptyViewModel.class))
+        } else if (modelClass.isAssignableFrom(EmptyViewModel.class))
             return (T) new EmptyViewModel(repository);
 
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());

@@ -25,6 +25,24 @@ import id.niteroomcreation.archcomponent.util.BlurTransformation
  */
 class MoviesAdapter : PagedListAdapter<MovieEntity, MoviesAdapter.ViewHolder>(DIFF_CALLBACK) {
 
+    companion object {
+        val TAG = MoviesAdapter::class.java.simpleName
+
+        private val DIFF_CALLBACK: DiffUtil.ItemCallback<MovieEntity> =
+            object : DiffUtil.ItemCallback<MovieEntity>() {
+                override fun areItemsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
+                    return oldItem.id == newItem.id
+                }
+
+                override fun areContentsTheSame(
+                    oldItem: MovieEntity,
+                    newItem: MovieEntity
+                ): Boolean {
+                    return oldItem == newItem
+                }
+            }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             IMoviesBinding.inflate(
@@ -79,23 +97,5 @@ class MoviesAdapter : PagedListAdapter<MovieEntity, MoviesAdapter.ViewHolder>(DI
                 )
             }
         }
-    }
-
-    companion object {
-        val TAG = MoviesAdapter::class.java.simpleName
-
-        private val DIFF_CALLBACK: DiffUtil.ItemCallback<MovieEntity> =
-            object : DiffUtil.ItemCallback<MovieEntity>() {
-                override fun areItemsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
-                    return oldItem.id == newItem.id
-                }
-
-                override fun areContentsTheSame(
-                    oldItem: MovieEntity,
-                    newItem: MovieEntity
-                ): Boolean {
-                    return oldItem == newItem
-                }
-            }
     }
 }

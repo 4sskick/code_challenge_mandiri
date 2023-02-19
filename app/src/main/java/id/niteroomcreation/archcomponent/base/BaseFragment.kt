@@ -9,29 +9,25 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import id.niteroomcreation.archcomponent.base.BaseFragment
 import id.niteroomcreation.archcomponent.util.viewmodel.ViewModelFactory
 
 /**
  * Created by Septian Adi Wijaya on 06/05/2021.
  * please be sure to add credential if you use people's code
  */
-abstract class BaseFragment<V : ViewDataBinding?, VM : BaseViewModel?> : Fragment(), IBaseView {
+abstract class BaseFragment<V : ViewDataBinding, VM : BaseViewModel> : Fragment(), IBaseView {
 
     companion object {
         val TAG = BaseFragment::class.java.simpleName
     }
 
-    @JvmField
     protected var mViewModel: VM? = null
-    var viewDataBinding: V? = null
+    lateinit var mViewBinding: V
 
     private lateinit var mRoot: View
-    lateinit var rootActivity: BaseActivity<*, *>
-    lateinit var baseFragmentManager: FragmentManager
+    private lateinit var rootActivity: BaseActivity<*, *>
 
     //layout xml file which gonna binds the view components
     @get:LayoutRes
@@ -55,23 +51,6 @@ abstract class BaseFragment<V : ViewDataBinding?, VM : BaseViewModel?> : Fragmen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
-        baseFragmentManager = rootActivity.supportFragmentManager
-    }
-
-    fun moveToFragment(
-        viewIdFrameLayout: Int,
-        fragment: BaseFragment<*, *>?,
-        fragmentTag: String?
-    ) {
-        try {
-            baseFragmentManager.beginTransaction()
-                .replace(viewIdFrameLayout, fragment!!, fragmentTag)
-                .commit()
-        } catch (e: Exception) {
-            throw IllegalStateException(
-                String.format("Seems like fragmentManager isn't initialized %s", e.message)
-            )
-        }
     }
 
     override fun onCreateView(
@@ -79,12 +58,12 @@ abstract class BaseFragment<V : ViewDataBinding?, VM : BaseViewModel?> : Fragmen
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewDataBinding = DataBindingUtil.inflate(inflater, layoutId, container, false)
-        viewDataBinding?.setVariable(bindingVariable, mViewModel)
-        viewDataBinding?.lifecycleOwner = this
-        viewDataBinding?.executePendingBindings()
+        mViewBinding = DataBindingUtil.inflate(inflater, layoutId, container, false)
+        mViewBinding.setVariable(bindingVariable, mViewModel)
+        mViewBinding.lifecycleOwner = this
+        mViewBinding.executePendingBindings()
 
-        mRoot = viewDataBinding!!.root
+        mRoot = mViewBinding.root
         return mRoot
     }
 
