@@ -1,0 +1,86 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "adult": false,
+      "backdrop_path": "/wwFBRyekDcKXJwP0mImRJjAnudL.jpg",
+      "genre_ids": [
+        27
+      ],
+      "id": 632357,
+      "original_language": "en",
+      "original_title": "The Unholy",
+      "overview": "",
+      "popularity": 5154.321,
+      "poster_path": "/4ryVgyGJzdBq8ejVIB0snxBqnyM.jpg",
+      "release_date": "2021-03-31",
+      "title": "The Unholy",
+      "video": false,
+      "vote_average": 7.2,
+      "vote_count": 544
+    },
+    {
+      "backdrop_path": "/wkyzeBBKLhSg1Oqhky5yoiFF2hG.jpg",
+      "first_air_date": "2018-04-22",
+      "genre_ids": [
+        18
+      ],
+      "id": 79008,
+      "name": "Luis Miguel: The Series",
+      "origin_country": [
+        "MX"
+      ],
+      "original_language": "es",
+      "original_name": "Luis Miguel: La Serie",
+      "overview": "The series dramatizes the life story of Mexican superstar singer Luis Miguel, who has captivated audiences in Latin America and beyond for decades.",
+      "popularity": 429.282,
+      "poster_path": "/34FaY8qpjBAVysSfrJ1l7nrAQaD.jpg",
+      "vote_average": 8,
+      "vote_count": 441
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/yyWNPhP1HR4BTLErHcZwIUsMBvA.jpg",
+      "genre_ids": [
+        80,
+        18,
+        9648,
+        53
+      ],
+      "id": 823855,
+      "original_language": "en",
+      "original_title": "I Am All Girls",
+      "overview": "",
+      "popularity": 1837.375,
+      "poster_path": "/m6bUeV4mczG3z2YXXr5XDKPsQzv.jpg",
+      "release_date": "2021-05-14",
+      "title": "I Am All Girls",
+      "video": false,
+      "vote_average": 7,
+      "vote_count": 79
+    },
+    {
+      "backdrop_path": "/IdkkotsKraWbqIZBXldbraEpCj.jpg",
+      "first_air_date": "2020-09-18",
+      "genre_ids": [
+        10762,
+        16,
+        10759
+      ],
+      "id": 93741,
+      "name": "Jurassic World: Camp Cretaceous",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "Jurassic World: Camp Cretaceous",
+      "overview": "Six teens attending an adventure camp on the opposite side of Isla Nublar must band together to survive when dinosaurs wreak havoc on the island.",
+      "popularity": 453.336,
+      "poster_path": "/jWTDtbp2TnUGw1OJoDqq2O9IS0M.jpg",
+      "vote_average": 7.8,
+      "vote_count": 1150
+    }
+  ],
+  "total_pages": 500,
+  "total_results": 10000
+}

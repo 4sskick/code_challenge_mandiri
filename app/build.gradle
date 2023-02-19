@@ -1,0 +1,223 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    compileSdkVersion 31
+//    buildToolsVersion this.ext.buildToolsVersion
+
+    flavorDimensions "default"
+
+    //app versioning
+    def versionMajor = 1
+    def versionMinor = 3
+    def versionPatch = 12
+    def versionBuild = 53
+
+    defaultConfig {
+        applicationId "id.niteroomcreation.archcomponent"
+        minSdkVersion 22
+        targetSdkVersion 31
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+        
+        //https://stackoverflow.com/a/51575561
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        //schema provide for DB room
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    productFlavors {
+        global {
+//            signingConfig signingConfigs.release
+            buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org/\""
+            buildConfigField "String", "BASE_PATH", "\"3/discover/\""
+
+            buildConfigField "String", "BASE_URL_IMG", "\"https://image.tmdb.org/\""
+            buildConfigField "String", "BASE_PATH_IMG", "\"t/p/\""
+
+            buildConfigField "String", "API_KEY", "\"0a2cc95ecf3bfef590c47493d7ab7b85\""
+            buildConfigField "String", "LANG_VER_ID", "\"id-ID\""
+            buildConfigField "String", "LANG_VER_EN", "\"en-EN\""
+            dimension = "default"
+
+            applicationId "id.niteroomcreation.archcomponent"
+        }
+
+        staging {
+//            signingConfig signingConfigs.debug
+            buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org/\""
+            buildConfigField "String", "BASE_PATH", "\"3/discover/\""
+
+            buildConfigField "String", "BASE_URL_IMG", "\"https://image.tmdb.org/\""
+            buildConfigField "String", "BASE_PATH_IMG", "\"t/p/\""
+
+            buildConfigField "String", "API_KEY", "\"0a2cc95ecf3bfef590c47493d7ab7b85\""
+            buildConfigField "String", "LANG_VER_ID", "\"id-ID\""
+            buildConfigField "String", "LANG_VER_EN", "\"en-EN\""
+            dimension = "default"
+
+            applicationId "id.niteroomcreation.archcomponent.staging"
+        }
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+//            useProguard true
+            minifyEnabled true
+//            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            getIsDefault().set(true)
+            testCoverageEnabled true
+            debuggable true
+//            useProguard false
+            minifyEnabled false
+//            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
+
+    buildFeatures {
+        dataBinding true
+        viewBinding true
+    }
+
+    kotlinOptions{
+        freeCompilerArgs += [
+                "-Xjvm-default=all",
+        ]
+    }
+}
+
+//begin automate permission
+// Get the path to ADB.  Required when running tests directly from Android Studio.
+// Source: http://stackoverflow.com/a/26771087/112705
+def adb = android.getAdbExe().toString()
+afterEvaluate {
+    task grantAnimationPermissionStaging(type: Exec, dependsOn: 'installStagingDebug') {
+        commandLine "$adb shell pm grant $android.productFlavors.staging.applicationId android.permission.SET_ANIMATION_SCALE".split(' ')
+    }
+
+    task grantAnimationPermissionGlobal(type: Exec, dependsOn: 'installGlobalDebug') {
+        commandLine "$adb shell pm grant $android.productFlavors.global.applicationId android.permission.SET_ANIMATION_SCALE".split(' ')
+    }
+
+    // When launching individual tests from Android Studio, it seems that only the assemble tasks
+    // get called directly, not the install* versions
+    tasks.each { task ->
+        if (task.name.startsWith('assembleStagingDebugAndroidTest')) {
+            task.dependsOn grantAnimationPermissionStaging
+        } else if (task.name.startsWith('assembleGlobalDebugAndroidTest')) {
+            task.dependsOn grantAnimationPermissionGlobal
+        }
+    }
+}
+//end automate permission
+
+//dependencies version
+def appCompatVersion = '1.2.0'
+def constraintLayoutVersion = '2.0.4'
+
+def junitVersion = '4.13.1'
+def junitExtVersion = '1.1.2'
+def espressoVersion = '3.3.0'
+def idleResourceVersion = '3.2.0'
+def androidTestVersion = '1.3.0'
+def androidCoreTestVersion = '2.1.0'
+def mockitoVersion = '3.6.0'
+
+def materialVersion = '1.2.1'
+def recyclerViewVersion = '1.1.0'
+def glideVersion = '4.11.0'
+def lottieVersion = '2.7.0'
+
+def intuitVersion = '1.0.6'
+def navigation_version = "2.3.0"
+
+def retrofitVersion = '2.5.0'
+
+def roomVersion = '2.2.3'
+def roomRuntimeVersion = '2.2.5'
+
+def pagingVersion = '2.1.1'
+dependencies {
+
+    //ui
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+
+    implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
+    implementation "com.google.android.material:material:$materialVersion"
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+
+    //loader animation
+    implementation "com.airbnb.android:lottie:$lottieVersion"
+
+    // jetpack navigation component
+    implementation "androidx.navigation:navigation-fragment:$navigation_version"
+    implementation "androidx.navigation:navigation-ui:$navigation_version"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$navigation_version"
+    implementation "androidx.paging:paging-runtime:$pagingVersion"
+
+    //dimension unit
+    implementation "com.intuit.sdp:sdp-android:$intuitVersion"
+    implementation "com.intuit.ssp:ssp-android:$intuitVersion"
+
+    //db room
+    implementation "androidx.room:room-runtime:$roomRuntimeVersion"
+    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+
+    //network request
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+
+    //testing
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "androidx.arch.core:core-testing:$androidCoreTestVersion"
+    testImplementation 'org.json:json:20180813'
+
+    androidTestImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    //to make it access able on main project package
+    implementation "androidx.test.espresso:espresso-idling-resource:$idleResourceVersion"
+    androidTestImplementation("com.android.support.test.espresso:espresso-contrib:$espressoVersion") {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    }
+
+    androidTestImplementation "androidx.test:runner:$androidTestVersion"
+    androidTestImplementation "androidx.test:rules:$androidTestVersion"
+    androidTestImplementation "androidx.test.ext:junit:$junitExtVersion"
+}

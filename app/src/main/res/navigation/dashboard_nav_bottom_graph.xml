@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/action_nav_movies">
+
+    <fragment
+        android:id="@+id/action_nav_movies"
+        android:name="id.niteroomcreation.archcomponent.feature.movies.MoviesFragment"
+        android:label="fragment_movies"
+        tools:layout="@layout/f_movies" />
+
+    <fragment
+        android:id="@+id/action_nav_tv_shows"
+        android:name="id.niteroomcreation.archcomponent.feature.tv_shows.TvFragment"
+        android:label="fragment_tv_shows"
+        tools:layout="@layout/f_tvs" />
+
+    <fragment
+        android:id="@+id/action_nav_saved_fav"
+        android:name="id.niteroomcreation.archcomponent.feature.favourite.FavFragment"
+        android:label="fragment_favourite"
+        tools:layout="@layout/f_favourite" />
+</navigation>
