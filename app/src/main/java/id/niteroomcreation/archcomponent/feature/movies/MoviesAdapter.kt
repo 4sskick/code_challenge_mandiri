@@ -89,10 +89,12 @@ class MoviesAdapter : PagedListAdapter<MovieEntity, MoviesAdapter.ViewHolder>(DI
                 )
                 binding.root.context.startActivity(
                     Intent(binding.root.context, DetailActivity::class.java)
-                        .putExtra(
-                            DetailActivity.EXTRA_MODEL_ID,
-                            item.id.toString() + "_" + MovieEntity.TAG
-                        ),
+                        .also {
+                            it.putExtra(
+                                DetailActivity.EXTRA_MODEL_ID,
+                                item.id.toString() + "_" + MovieEntity.TAG
+                            )
+                        },
                     opt.toBundle()
                 )
             }

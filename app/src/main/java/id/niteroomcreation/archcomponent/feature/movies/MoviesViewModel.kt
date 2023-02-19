@@ -5,7 +5,6 @@ import androidx.paging.PagedList
 import id.niteroomcreation.archcomponent.base.BaseViewModel
 import id.niteroomcreation.archcomponent.domain.data.local.entity.MovieEntity
 import id.niteroomcreation.archcomponent.domain.repositories.RepositoryImpl
-import id.niteroomcreation.archcomponent.feature.movies.MoviesViewModel
 import id.niteroomcreation.archcomponent.util.vo.Resource
 
 /**
@@ -17,5 +16,5 @@ class MoviesViewModel(private val repository: RepositoryImpl) : BaseViewModel() 
         val TAG = MoviesViewModel::class.java.simpleName
     }
 
-    val movies: LiveData<Resource<PagedList<MovieEntity>>> = repository.movies
+    val movies: LiveData<Resource<PagedList<MovieEntity>>> = repository.getMovies()
 }

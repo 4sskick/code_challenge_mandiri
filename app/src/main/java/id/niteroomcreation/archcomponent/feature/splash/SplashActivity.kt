@@ -1,39 +1,32 @@
-package id.niteroomcreation.archcomponent.feature.splash;
+package id.niteroomcreation.archcomponent.feature.splash
 
-import android.os.Handler;
-import android.os.Looper;
-
-import id.niteroomcreation.archcomponent.R;
-import id.niteroomcreation.archcomponent.base.BaseActivity;
-import id.niteroomcreation.archcomponent.databinding.ASplashBinding;
-import id.niteroomcreation.archcomponent.util.NavUtils;
+import android.os.Handler
+import android.os.Looper
+import id.niteroomcreation.archcomponent.R
+import id.niteroomcreation.archcomponent.base.BaseActivity
+import id.niteroomcreation.archcomponent.databinding.ASplashBinding
+import id.niteroomcreation.archcomponent.feature.splash.SplashActivity
+import id.niteroomcreation.archcomponent.util.NavUtils
 
 /**
  * Created by monta on 05/05/21
  * please make sure to use credit when using people code
- **/
-public class SplashActivity extends BaseActivity<ASplashBinding, SplashViewModel> {
+ */
+class SplashActivity : BaseActivity<ASplashBinding, SplashViewModel>() {
 
-    public static final String TAG = SplashActivity.class.getSimpleName();
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.a_splash;
-    }
+    override val layoutId: Int = R.layout.a_splash
 
     //filled with variable name of data binding on layout
-    @Override
-    public int getBindingVariable() {
-        return 0;
+    override val bindingVariable: Int = 0
+
+    override fun initUI() {
+        Handler(Looper.getMainLooper()).postDelayed(
+            { NavUtils.gotoDashboard(this@SplashActivity) },
+            1500
+        )
     }
 
-    @Override
-    public void initUI() {
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                NavUtils.gotoDashboard(SplashActivity.this);
-            }
-        }, 1500);
+    companion object {
+        val TAG = SplashActivity::class.java.simpleName
     }
 }
