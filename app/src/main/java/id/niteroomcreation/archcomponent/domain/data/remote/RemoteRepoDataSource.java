@@ -3,7 +3,6 @@ package id.niteroomcreation.archcomponent.domain.data.remote;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -53,7 +52,6 @@ public class RemoteRepoDataSource {
                 try {
                     Response<BaseResponse<Movies>> m = remoteRepo.getMovies(lang).execute();
 
-
                     LogHelper.e(TAG, m.code(), m.message(), m.errorBody(), m.headers(), m.message());
                     if (m.isSuccessful() && m.body() != null)
 
@@ -73,30 +71,6 @@ public class RemoteRepoDataSource {
         return mData;
     }
 
-
-    public LiveData<ApiResponse<List<TvShows>>> getTvShows(String lang) {
-        MutableLiveData<ApiResponse<List<TvShows>>> mData = new MutableLiveData<>();
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Response<BaseResponse<TvShows>> t = remoteRepo.getTvShows(lang).execute();
-
-                    if (t.isSuccessful() && t.body() != null)
-                        mData.postValue(ApiResponse.success(t.body().getResults()));
-                    else
-                        mData.postValue(ApiResponse.error("Response service not available", null));
-                } catch (IOException e) {
-                    LogHelper.e(TAG, "here calling me!", e.getMessage());
-
-                    mData.postValue(ApiResponse.error(e.getMessage(), null));
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        return mData;
-    }
 
     public interface RemoteCallback {
         default void onMoviesCallback(List<Movies> data) {

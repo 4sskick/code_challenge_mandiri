@@ -29,23 +29,4 @@ public class DetailViewModel extends BaseViewModel {
         return repository.getMovieById(objId);
     }
 
-    public LiveData<TvShowEntity> getTvShowById() {
-        return repository.getTvShowById(objId);
-    }
-
-    public void updateMoviesOnFav(MovieEntity entity) {
-        repository.updateMovie(entity);
-    }
-
-    public void updateTvShowOnFav(TvShowEntity entity) {
-        repository.updateTvShow(entity);
-    }
-
-    public void insertIntoFav(FavouriteEntity entity) {
-        repository.insertIntoFav(entity);
-    }
-
-    public void deleteFav(FavouriteEntity entity) {
-        repository.deleteFav(entity);
-    }
 }

@@ -31,7 +31,6 @@ public class DetailActivity extends BaseActivity<ADetailBinding, DetailViewModel
     public static final String EXTRA_MODEL_ID = "extra.model.id";
 
     private MovieEntity movies = null;
-    private TvShowEntity tvShows = null;
 
     @Override
     public int getLayoutId() {
@@ -76,18 +75,6 @@ public class DetailActivity extends BaseActivity<ADetailBinding, DetailViewModel
                                 throw new RuntimeException("Data doesn't found");
                         }
                     });
-                } else if (objName[1].equals(TvShowEntity.TAG)) {
-                    mViewModel.getTvShowById().observe(this, new Observer<TvShowEntity>() {
-                        @Override
-                        public void onChanged(TvShowEntity tvShowEntity) {
-
-                            LogHelper.e(TAG, tvShowEntity);
-                            if (tvShowEntity != null)
-                                setupView(tvShowEntity);
-                            else
-                                throw new RuntimeException("data doesn't found");
-                        }
-                    });
                 } else
                     throw new RuntimeException("Obj model doesn't found!");
             } else
@@ -102,16 +89,13 @@ public class DetailActivity extends BaseActivity<ADetailBinding, DetailViewModel
 
         if (obj instanceof MovieEntity)
             movies = (MovieEntity) obj;
-        else if (obj instanceof TvShowEntity)
-            tvShows = (TvShowEntity) obj;
 
         Glide.with(this)
                 .load(String.format("%s%sw500/%s"
                         , BuildConfig.BASE_URL_IMG
                         , BuildConfig.BASE_PATH_IMG
                         , movies != null ?
-                                movies.getPosterPath() : tvShows != null ?
-                                tvShows.getPosterPath() : R.drawable.ic_placeholder))
+                                movies.getPosterPath() : R.drawable.ic_placeholder))
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e
@@ -136,36 +120,18 @@ public class DetailActivity extends BaseActivity<ADetailBinding, DetailViewModel
                 .placeholder(R.drawable.ic_placeholder)
                 .into(getViewDataBinding().imgDetailMovie);
 
-        getViewDataBinding().txtDetailName.setText(movies != null ? movies.getName() : tvShows.getName());
-        getViewDataBinding().txtDetailDesc.setText(getOverview(movies, tvShows));
+        getViewDataBinding().txtDetailName.setText(movies.getName());
+        getViewDataBinding().txtDetailDesc.setText(getOverview(movies, null));
         getViewDataBinding().txtDetailSaveFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (movies != null) {
-                    movies.setBookmarked(!movies.isBookmarked());
-                    mViewModel.updateMoviesOnFav(movies);
 
-                    if (movies.isBookmarked())
-                        mViewModel.insertIntoFav(movies.cloned());
-                    else
-                        mViewModel.deleteFav(movies.cloned());
-
-                } else if (tvShows != null) {
-                    tvShows.setBookmarked(!tvShows.isBookmarked());
-                    mViewModel.updateTvShowOnFav(tvShows);
-
-                    if (tvShows.isBookmarked())
-                        mViewModel.insertIntoFav(tvShows.cloned());
-                    else
-                        mViewModel.deleteFav(tvShows.cloned());
-                }
-
-                setupSavedFav(true, movies != null ? movies.isBookmarked() : tvShows != null && tvShows.isBookmarked());
+                setupSavedFav(true, movies.isBookmarked());
             }
         });
 
-        setupSavedFav(false, movies != null ? movies.isBookmarked() : tvShows != null && tvShows.isBookmarked());
+        setupSavedFav(false, movies.isBookmarked());
     }
 
     private void setupSavedFav(boolean showMsg, boolean makeItFav) {

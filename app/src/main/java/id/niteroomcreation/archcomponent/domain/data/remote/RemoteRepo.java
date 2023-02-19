@@ -3,7 +3,6 @@ package id.niteroomcreation.archcomponent.domain.data.remote;
 import id.niteroomcreation.archcomponent.BuildConfig;
 import id.niteroomcreation.archcomponent.domain.data.remote.response.BaseResponse;
 import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies;
-import id.niteroomcreation.archcomponent.domain.data.remote.response.TvShows;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -17,6 +16,4 @@ public interface RemoteRepo {
     @GET(BuildConfig.BASE_PATH + "movie")
     Call<BaseResponse<Movies>> getMovies(@Query("language") String lang);
 
-    @GET(BuildConfig.BASE_PATH + "tv")
-    Call<BaseResponse<TvShows>> getTvShows(@Query("language") String lang);
 }

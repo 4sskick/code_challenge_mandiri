@@ -10,12 +10,9 @@ import java.util.List;
 
 import id.niteroomcreation.archcomponent.BuildConfig;
 import id.niteroomcreation.archcomponent.domain.data.local.LocalDataSource;
-import id.niteroomcreation.archcomponent.domain.data.local.entity.FavouriteEntity;
 import id.niteroomcreation.archcomponent.domain.data.local.entity.MovieEntity;
-import id.niteroomcreation.archcomponent.domain.data.local.entity.TvShowEntity;
 import id.niteroomcreation.archcomponent.domain.data.remote.RemoteRepoDataSource;
 import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies;
-import id.niteroomcreation.archcomponent.domain.data.remote.response.TvShows;
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.ApiResponse;
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.NetworkBoundResource;
 import id.niteroomcreation.archcomponent.util.AppExecutors;
@@ -116,70 +113,6 @@ public class Repository implements RepositoryImpl {
         }.asLiveData();
     }
 
-    public LiveData<Resource<PagedList<TvShowEntity>>> getTvShows() {
-
-        return new NetworkBoundResource<PagedList<TvShowEntity>, List<TvShows>>(appExecutors) {
-
-            @Override
-            protected LiveData<PagedList<TvShowEntity>> loadFromDB() {
-                EspressoIdlingResource.increment();
-
-                PagedList.Config config = new PagedList.Config.Builder()
-                        .setEnablePlaceholders(false)
-                        .setInitialLoadSizeHint(4)
-                        .setPageSize(4)
-                        .build();
-
-                LivePagedListBuilder builder = new LivePagedListBuilder<>(localDataSource.getTvShows(), config);
-                EspressoIdlingResource.decrement();
-
-                return builder.build();
-            }
-
-            @Override
-            protected Boolean shouldFetch(PagedList<TvShowEntity> data) {
-                return (data == null || data.size() == 0);
-            }
-
-            @Override
-            protected LiveData<ApiResponse<List<TvShows>>> createCall() {
-                return remoteRepoDataSource.getTvShows(BuildConfig.LANG_VER_ID);
-            }
-
-            @Override
-            protected void saveCallResult(List<TvShows> data) {
-                List<TvShowEntity> tl = new ArrayList<>();
-                for (int i = 0; i < data.size(); i++) {
-                    TvShowEntity t = new TvShowEntity();
-                    t.setId(data.get(i).getId());
-                    t.setName(data.get(i).getName());
-                    t.setDesc(data.get(i).getOverview());
-                    t.setPosterPath(data.get(i).getPosterPath());
-                    t.setRatePercentage(data.get(i).getVoteAverage());
-                    t.setYear(data.get(i).getFirstAirDate());
-
-                    tl.add(t);
-                }
-
-                localDataSource.insertTvs(tl);
-            }
-        }.asLiveData();
-    }
-
-    @Override
-    public LiveData<PagedList<FavouriteEntity>> getFavourites() {
-        EspressoIdlingResource.increment();
-        PagedList.Config config = new PagedList.Config.Builder()
-                .setEnablePlaceholders(true)
-                .setInitialLoadSizeHint(4)
-                .setPageSize(4)
-                .build();
-
-        LivePagedListBuilder builder = new LivePagedListBuilder<>(localDataSource.getFavourites(), config);
-
-        EspressoIdlingResource.decrement();
-        return builder.build();
-    }
 
     @Override
     public LiveData<MovieEntity> getMovieById(int id) {
@@ -189,45 +122,5 @@ public class Repository implements RepositoryImpl {
 //        return m;
 
         return new MutableLiveData<>(localDataSource.getMovieById((long) id));
-    }
-
-    @Override
-    public LiveData<TvShowEntity> getTvShowById(int id) {
-//        EspressoIdlingResource.increment();
-//
-//        MutableLiveData<TvShowEntity> m = new MutableLiveData<>(localDataSource.getTvById((long)id).getValue());
-////        LiveData<TvShowEntity> t = localDataSource.getTvById((long) id);
-//        EspressoIdlingResource.decrement();
-//        return m;
-
-        return new MutableLiveData<>(localDataSource.getTvById((long) id));
-    }
-
-    @Override
-    public void updateTvShow(TvShowEntity entity) {
-        EspressoIdlingResource.increment();
-        localDataSource.updateTv(entity);
-        EspressoIdlingResource.decrement();
-    }
-
-    @Override
-    public void updateMovie(MovieEntity entity) {
-        EspressoIdlingResource.increment();
-        localDataSource.updateMovie(entity);
-        EspressoIdlingResource.decrement();
-    }
-
-    @Override
-    public void insertIntoFav(FavouriteEntity entity) {
-        EspressoIdlingResource.increment();
-        localDataSource.insertIntoFav(entity);
-        EspressoIdlingResource.decrement();
-    }
-
-    @Override
-    public void deleteFav(FavouriteEntity entity) {
-        EspressoIdlingResource.increment();
-        localDataSource.deleteFav(entity);
-        EspressoIdlingResource.decrement();
     }
 }
