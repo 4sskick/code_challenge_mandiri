@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Arch Component</string>
+    <string name="app_name">Movie Catalogue</string>
 
     <string name="nav_bot_movies">Movies</string>
     <string name="nav_bot_tv_shows">Tv Shows</string>

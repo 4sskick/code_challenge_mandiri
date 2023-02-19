@@ -4,6 +4,7 @@ import android.provider.BaseColumns;
 
 import androidx.room.ColumnInfo;
 
+
 /**
  * Created by Septian Adi Wijaya on 19/06/2021.
  * please be sure to add credential if you use people's code
