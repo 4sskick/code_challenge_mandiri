@@ -7,4 +7,5 @@ package id.niteroomcreation.archcomponent.base
 interface IBaseView {
     fun showMessage(message: String?)
     fun showLoading()
+    fun dismissLoading()
 }

@@ -32,7 +32,7 @@ public class SplashActivity extends BaseActivity<ASplashBinding, SplashViewModel
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                NavUtils.directToDashboard(SplashActivity.this);
+                NavUtils.gotoDashboard(SplashActivity.this);
             }
         }, 1500);
     }

@@ -40,8 +40,9 @@ abstract class BaseFragment<V : ViewDataBinding?, VM : BaseViewModel?> : Fragmen
     //this will be a variable which generated from data binding on xml view
     abstract val bindingVariable: Int
     abstract fun initUI()
+
     fun obtainViewModel(owner: ViewModelStoreOwner, vm: Class<VM>): VM {
-        return ViewModelProvider(owner!!, ViewModelFactory.getInstance(context)).get(vm)
+        return ViewModelProvider(owner, ViewModelFactory.getInstance(context)).get(vm)
     }
 
     override fun onAttach(context: Context) {
@@ -54,7 +55,7 @@ abstract class BaseFragment<V : ViewDataBinding?, VM : BaseViewModel?> : Fragmen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
-        baseFragmentManager = rootActivity!!.supportFragmentManager
+        baseFragmentManager = rootActivity.supportFragmentManager
     }
 
     fun moveToFragment(
@@ -79,15 +80,17 @@ abstract class BaseFragment<V : ViewDataBinding?, VM : BaseViewModel?> : Fragmen
         savedInstanceState: Bundle?
     ): View? {
         viewDataBinding = DataBindingUtil.inflate(inflater, layoutId, container, false)
+        viewDataBinding?.setVariable(bindingVariable, mViewModel)
+        viewDataBinding?.lifecycleOwner = this
+        viewDataBinding?.executePendingBindings()
+
         mRoot = viewDataBinding!!.root
         return mRoot
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewDataBinding?.setVariable(bindingVariable, mViewModel)
-        viewDataBinding?.lifecycleOwner = this
-        viewDataBinding?.executePendingBindings()
+
         initUI()
     }
 
@@ -97,5 +100,9 @@ abstract class BaseFragment<V : ViewDataBinding?, VM : BaseViewModel?> : Fragmen
 
     override fun showLoading() {
         rootActivity.showLoading()
+    }
+
+    override fun dismissLoading() {
+        rootActivity.dismissLoading()
     }
 }

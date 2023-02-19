@@ -1,118 +1,97 @@
-package id.niteroomcreation.archcomponent.feature.movies;
+package id.niteroomcreation.archcomponent.feature.movies
 
-import android.content.Context;
-import android.view.View;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
-import androidx.lifecycle.Observer;
-import androidx.paging.PagedList;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import java.util.List;
-
-import id.niteroomcreation.archcomponent.R;
-import id.niteroomcreation.archcomponent.base.BaseFragment;
-import id.niteroomcreation.archcomponent.databinding.FMoviesBinding;
-import id.niteroomcreation.archcomponent.domain.data.local.entity.MovieEntity;
-import id.niteroomcreation.archcomponent.util.LogHelper;
-import id.niteroomcreation.archcomponent.util.listener.GenericItemListener;
-import id.niteroomcreation.archcomponent.util.vo.Resource;
-import id.niteroomcreation.archcomponent.util.vo.Status;
+import android.content.Context
+import android.view.View
+import androidx.core.util.Pair
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import id.niteroomcreation.archcomponent.R
+import id.niteroomcreation.archcomponent.base.BaseFragment
+import id.niteroomcreation.archcomponent.databinding.FMoviesBinding
+import id.niteroomcreation.archcomponent.feature.movies.MoviesFragment
+import id.niteroomcreation.archcomponent.util.LogHelper
+import id.niteroomcreation.archcomponent.util.vo.Status
 
 /**
  * Created by Septian Adi Wijaya on 07/05/2021.
  * please be sure to add credential if you use people's code
  */
-public class MoviesFragment extends BaseFragment<FMoviesBinding, MoviesViewModel> {
+class MoviesFragment : BaseFragment<FMoviesBinding, MoviesViewModel>() {
 
-    public static final String TAG = MoviesFragment.class.getSimpleName();
+    companion object {
+        val TAG = MoviesFragment::class.java.simpleName
 
-    private MoviesAdapter adapter;
-    private MoviesListener mListener;
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.f_movies;
+        fun newInstance(): MoviesFragment {
+            return MoviesFragment()
+        }
     }
 
-    @Override
-    public int getBindingVariable() {
-        return 0;
+    private lateinit var adapter: MoviesAdapter
+    private var mListener: MoviesListener? = null
+
+    override val layoutId: Int
+        get() = R.layout.f_movies
+
+    override val bindingVariable: Int
+        get() = 0
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mListener = if (context is MoviesListener) {
+            context
+        } else throw RuntimeException("Listener need to implemented")
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        if (context instanceof MoviesListener) {
-            mListener = (MoviesListener) context;
-        } else
-            throw new RuntimeException("Listener need to implemented");
+    override fun onDetach() {
+        mListener = null
+        super.onDetach()
     }
 
-    @Override
-    public void onDetach() {
-        mListener = null;
-        super.onDetach();
+    override fun initUI() {
+        setupObserver()
+        setupAdapter()
     }
 
-    @Override
-    public void initUI() {
-        setupObserver();
-        setupAdapter();
-    }
+    private fun setupObserver() {
+        mViewModel = obtainViewModel(this, MoviesViewModel::class.java)
+        mViewModel?.movies?.observe(this, Observer { data ->
 
-    void setupObserver() {
-        mViewModel = obtainViewModel(this, MoviesViewModel.class);
-        mViewModel.getMovies().observe(getViewLifecycleOwner(), new Observer<Resource<PagedList<MovieEntity>>>() {
-            @Override
-            public void onChanged(Resource<PagedList<MovieEntity>> data) {
-                if (data.data != null) {
-                    switch (data.status) {
-                        case SUCCESS:
-                            getViewDataBinding().sProgress.setVisibility(View.GONE);
-                            adapter.submitList(data.data);
+            LogHelper.e(TAG, data, data.message)
 
-                            break;
-                        case LOADING:
-                            getViewDataBinding().sProgress.setVisibility(View.VISIBLE);
-                            break;
-                        case ERROR:
-                            getViewDataBinding().sProgress.setVisibility(View.GONE);
-
-                            LogHelper.e(TAG, data, data.message);
-                            Toast.makeText(getContext(), data.message, Toast.LENGTH_SHORT).show();
-                            break;
+            if (data.data != null) {
+                when (data.status) {
+                    Status.SUCCESS -> {
+//                        dismissLoading()
+                        adapter.submitList(data.data)
+                        adapter.notifyDataSetChanged()
                     }
-                } else {
-                    if (data.status != Status.LOADING) {
-                        String msg = "Data Request is not availabled";
-                        LogHelper.e(TAG, msg, data);
-                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                        getViewDataBinding().sProgress.setVisibility(View.GONE);
+                    Status.LOADING -> {
+                        showLoading()
+                    }
+                    Status.ERROR -> {
+                        dismissLoading()
+                        showMessage(data.message)
                     }
                 }
+
+            } else {
+                if (data.status != Status.LOADING) {
+                    showMessage("Data Request is not availabled")
+                    dismissLoading()
+                }
             }
-        });
+        })
     }
 
-    void setupAdapter() {
+    private fun setupAdapter() {
+        adapter = MoviesAdapter()
 
-        adapter = new MoviesAdapter(new GenericItemListener<MovieEntity, List<Pair<View, String>>>() {
-            @Override
-            public void onItemViewClicked(MovieEntity model, List<Pair<View, String>> view) {
-                mListener.onItemSelectedDetail(model, view);
-            }
-        });
-
-        getViewDataBinding().sProgress.setVisibility(View.VISIBLE);
-        getViewDataBinding().listMovie.setLayoutManager(new LinearLayoutManager(getContext()));
-        getViewDataBinding().listMovie.setAdapter(adapter);
+        viewDataBinding?.listMovie?.layoutManager = LinearLayoutManager(context)
+        viewDataBinding?.listMovie?.adapter = adapter
     }
 
-    public interface MoviesListener {
-        void onItemSelectedDetail(Object item, List<Pair<View, String>> view);
+    interface MoviesListener {
+        fun onItemSelectedDetail(item: Any, view: List<Pair<View, String>>)
     }
+
 }

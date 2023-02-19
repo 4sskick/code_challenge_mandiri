@@ -1,10 +1,13 @@
 package id.niteroomcreation.archcomponent.feature.movies;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
@@ -13,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,8 @@ import id.niteroomcreation.archcomponent.BuildConfig;
 import id.niteroomcreation.archcomponent.R;
 import id.niteroomcreation.archcomponent.databinding.IMoviesBinding;
 import id.niteroomcreation.archcomponent.domain.data.local.entity.MovieEntity;
+import id.niteroomcreation.archcomponent.feature.detail.DetailActivity;
 import id.niteroomcreation.archcomponent.util.BlurTransformation;
-import id.niteroomcreation.archcomponent.util.listener.GenericItemListener;
 
 /**
  * Created by Septian Adi Wijaya on 07/05/2021.
@@ -34,22 +35,19 @@ public class MoviesAdapter extends PagedListAdapter<MovieEntity, MoviesAdapter.V
     public static final String TAG = MoviesAdapter.class.getSimpleName();
     private static final DiffUtil.ItemCallback<MovieEntity> DIFF_CALLBACK = new DiffUtil.ItemCallback<MovieEntity>() {
         @Override
-        public boolean areItemsTheSame(@NonNull @NotNull MovieEntity oldItem, @NonNull @NotNull MovieEntity newItem) {
+        public boolean areItemsTheSame(MovieEntity oldItem, MovieEntity newItem) {
             return oldItem.getId() == newItem.getId();
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull @NotNull MovieEntity oldItem, @NonNull @NotNull MovieEntity newItem) {
+        public boolean areContentsTheSame(MovieEntity oldItem, MovieEntity newItem) {
             return oldItem.equals(newItem);
         }
     };
-    private final GenericItemListener<MovieEntity, List<Pair<View, String>>> mListener;
 
 
-    public MoviesAdapter(GenericItemListener<MovieEntity, List<Pair<View, String>>> mListener) {
+    public MoviesAdapter() {
         super(DIFF_CALLBACK);
-
-        this.mListener = mListener;
     }
 
     @NonNull
@@ -94,7 +92,19 @@ public class MoviesAdapter extends PagedListAdapter<MovieEntity, MoviesAdapter.V
                     a.add(t1);
                     a.add(t2);
 
-                    mListener.onItemViewClicked(item, a);
+//                    mListener.onItemViewClicked(item, a);
+
+                    ActivityOptionsCompat opt = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            (Activity) binding.getRoot().getContext()
+                            , t1
+                            , t2
+                    );
+
+                    binding.getRoot().getContext().startActivity(
+                            new Intent(binding.getRoot().getContext(), DetailActivity.class)
+                                    .putExtra(DetailActivity.EXTRA_MODEL_ID, item.getId() + "_" + MovieEntity.TAG),
+                            opt.toBundle()
+                    );
                 }
             });
         }

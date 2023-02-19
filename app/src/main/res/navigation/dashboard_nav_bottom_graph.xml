@@ -11,15 +11,15 @@
         android:label="fragment_movies"
         tools:layout="@layout/f_movies" />
 
-    <fragment
-        android:id="@+id/action_nav_tv_shows"
-        android:name="id.niteroomcreation.archcomponent.feature.tv_shows.TvFragment"
-        android:label="fragment_tv_shows"
-        tools:layout="@layout/f_tvs" />
+<!--    <fragment-->
+<!--        android:id="@+id/action_nav_tv_shows"-->
+<!--        android:name="id.niteroomcreation.archcomponent.feature.tv_shows.TvFragment"-->
+<!--        android:label="fragment_tv_shows"-->
+<!--        tools:layout="@layout/f_tvs" />-->
 
-    <fragment
-        android:id="@+id/action_nav_saved_fav"
-        android:name="id.niteroomcreation.archcomponent.feature.favourite.FavFragment"
-        android:label="fragment_favourite"
-        tools:layout="@layout/f_favourite" />
+<!--    <fragment-->
+<!--        android:id="@+id/action_nav_saved_fav"-->
+<!--        android:name="id.niteroomcreation.archcomponent.feature.favourite.FavFragment"-->
+<!--        android:label="fragment_favourite"-->
+<!--        tools:layout="@layout/f_favourite" />-->
 </navigation>
