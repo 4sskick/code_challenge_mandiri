@@ -1,125 +1,110 @@
-package id.niteroomcreation.archcomponent.util.testing;
+package id.niteroomcreation.archcomponent.util.testing
 
-import android.content.Context;
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies;
-import id.niteroomcreation.archcomponent.domain.data.remote.response.TvShows;
+import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
+import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.response.TvShows
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
 
 /**
  * Created by Septian Adi Wijaya on 30/05/2021.
  * please be sure to add credential if you use people's code
  */
-public class JsonHelper {
+class JsonHelper {
+    private var context: Context? = null
 
-    private Context context;
-
-    public JsonHelper() {
-
+    constructor() {}
+    constructor(context: Context?) {
+        this.context = context
     }
 
-    public JsonHelper(Context context) {
-        this.context = context;
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private String parsingFileToString(String fileName) {
-        try {
-            InputStream is = context.getAssets().open(fileName);
-            byte[] buffer = new byte[is.available()];
-            is.read(buffer);
-            is.close();
-            return new String(buffer);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
+    private fun parsingFileToString(fileName: String): String? {
+        return try {
+            val `is` = context!!.assets.open(fileName)
+            val buffer = ByteArray(`is`.available())
+            `is`.read(buffer)
+            `is`.close()
+            String(buffer)
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            null
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private String readFile(String path) {
-        final StringBuilder sb = new StringBuilder();
-        String strLine;
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8))) {
-            while ((strLine = reader.readLine()) != null) {
-                sb.append(strLine);
-            }
-        } catch (final IOException ignore) {
-            //ignore
-        }
-        return sb.toString();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public List<Movies> loadMovies() {
-        List<Movies> movies = new ArrayList<>();
+    private fun readFile(path: String): String {
+        val sb = StringBuilder()
+        var strLine: String?
         try {
-            String json = readFile("src/main/assets/Movies_dummy.json");
-//            String json = parsingFileToString("Movies_dummy.json");
-            JSONObject responseJo = new JSONObject(json);
-            JSONArray resultJa = responseJo.getJSONArray("results");
-
-            for (int i = 0; i < resultJa.length(); i++) {
-                JSONObject mJo = resultJa.getJSONObject(i);
-
-                Movies m = new Movies();
-                m.setTitle(mJo.getString("title"));
-                m.setOverview(mJo.getString("overview"));
-                m.setPosterPath(mJo.getString("poster_path"));
-                m.setVoteAverage(mJo.getDouble("vote_average"));
-                m.setReleaseDate(mJo.getString("release_date"));
-
-                movies.add(m);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return movies;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public List<TvShows> loadTvShows() {
-        List<TvShows> tvShows = new ArrayList<>();
-        try {
-            String json = readFile("src/main/assets/TvShows_dummy.json");
-
-            if (json != null) {
-                JSONObject responseJo = new JSONObject(json);
-                JSONArray resultJa = responseJo.getJSONArray("results");
-
-                for (int i = 0; i < resultJa.length(); i++) {
-                    JSONObject mJo = resultJa.getJSONObject(i);
-
-                    TvShows m = new TvShows();
-                    m.setName(mJo.getString("name"));
-                    m.setOverview(mJo.getString("overview"));
-                    m.setPosterPath(mJo.getString("poster_path"));
-                    m.setVoteAverage(mJo.getDouble("vote_average"));
-                    m.setFirstAirDate(mJo.getString("first_air_date"));
-
-                    tvShows.add(m);
+            BufferedReader(
+                InputStreamReader(
+                    FileInputStream(path),
+                    StandardCharsets.UTF_8
+                )
+            ).use { reader ->
+                while (reader.readLine().also { strLine = it } != null) {
+                    sb.append(strLine)
                 }
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (ignore: IOException) {
+            //ignore
         }
+        return sb.toString()
+    }
 
-        return tvShows;
+    //    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    fun loadMovies(): List<Movies> {
+        val movies: MutableList<Movies> = ArrayList()
+        try {
+            val json = readFile("src/main/assets/Movies_dummy.json")
+            //            String json = parsingFileToString("Movies_dummy.json");
+            val responseJo = JSONObject(json)
+            val resultJa = responseJo.getJSONArray("results")
+            for (i in 0 until resultJa.length()) {
+                val mJo = resultJa.getJSONObject(i)
+                val m = Movies()
+                m.title = mJo.getString("title")
+                m.overview = mJo.getString("overview")
+                m.posterPath = mJo.getString("poster_path")
+                m.voteAverage = mJo.getDouble("vote_average")
+                m.releaseDate = mJo.getString("release_date")
+                movies.add(m)
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return movies
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    fun loadTvShows(): List<TvShows> {
+        val tvShows: MutableList<TvShows> = ArrayList()
+        try {
+            val json = readFile("src/main/assets/TvShows_dummy.json")
+            if (json != null) {
+                val responseJo = JSONObject(json)
+                val resultJa = responseJo.getJSONArray("results")
+                for (i in 0 until resultJa.length()) {
+                    val mJo = resultJa.getJSONObject(i)
+                    val m = TvShows()
+                    m.name = mJo.getString("name")
+                    m.overview = mJo.getString("overview")
+                    m.posterPath = mJo.getString("poster_path")
+                    m.voteAverage = mJo.getDouble("vote_average")
+                    m.firstAirDate = mJo.getString("first_air_date")
+                    tvShows.add(m)
+                }
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return tvShows
     }
 }

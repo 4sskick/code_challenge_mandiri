@@ -70,14 +70,4 @@ public class RemoteRepoDataSource {
         });
         return mData;
     }
-
-
-    public interface RemoteCallback {
-        default void onMoviesCallback(List<Movies> data) {
-        }
-
-        default void onTvShowsCallback(List<TvShows> data) {
-
-        }
-    }
 }
