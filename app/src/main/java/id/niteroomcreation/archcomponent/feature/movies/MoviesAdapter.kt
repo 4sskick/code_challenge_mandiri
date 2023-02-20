@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -15,6 +15,7 @@ import id.niteroomcreation.archcomponent.BuildConfig
 import id.niteroomcreation.archcomponent.R
 import id.niteroomcreation.archcomponent.databinding.IMoviesBinding
 import id.niteroomcreation.archcomponent.domain.data.local.entity.MovieEntity
+import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies
 import id.niteroomcreation.archcomponent.feature.detail.DetailActivity
 import id.niteroomcreation.archcomponent.feature.movies.MoviesAdapter
 import id.niteroomcreation.archcomponent.util.BlurTransformation
@@ -23,24 +24,23 @@ import id.niteroomcreation.archcomponent.util.BlurTransformation
  * Created by Septian Adi Wijaya on 07/05/2021.
  * please be sure to add credential if you use people's code
  */
-class MoviesAdapter : PagedListAdapter<MovieEntity, MoviesAdapter.ViewHolder>(DIFF_CALLBACK) {
+class MoviesAdapter : PagingDataAdapter<Movies, MoviesAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         val TAG = MoviesAdapter::class.java.simpleName
 
-        private val DIFF_CALLBACK: DiffUtil.ItemCallback<MovieEntity> =
-            object : DiffUtil.ItemCallback<MovieEntity>() {
-                override fun areItemsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
-                    return oldItem.id == newItem.id
-                }
-
-                override fun areContentsTheSame(
-                    oldItem: MovieEntity,
-                    newItem: MovieEntity
-                ): Boolean {
-                    return oldItem == newItem
-                }
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movies>() {
+            override fun areItemsTheSame(oldItem: Movies, newItem: Movies): Boolean {
+                return oldItem.id == newItem.id
             }
+
+            override fun areContentsTheSame(
+                oldItem: Movies,
+                newItem: Movies
+            ): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -58,9 +58,9 @@ class MoviesAdapter : PagedListAdapter<MovieEntity, MoviesAdapter.ViewHolder>(DI
     }
 
     class ViewHolder(private val binding: IMoviesBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun binds(item: MovieEntity) {
-            binding.txtItemName.text = item.name
-            binding.txtItemDesc.text = item.desc
+        fun binds(item: Movies) {
+            binding.txtItemName.text = item.originalTitle
+            binding.txtItemDesc.text = item.overview
 
             Glide.with(itemView.context)
                 .load(

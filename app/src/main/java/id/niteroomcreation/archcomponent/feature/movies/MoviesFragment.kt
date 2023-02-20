@@ -4,12 +4,13 @@ import android.content.Context
 import android.view.View
 import androidx.core.util.Pair
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.niteroomcreation.archcomponent.R
 import id.niteroomcreation.archcomponent.base.BaseFragment
 import id.niteroomcreation.archcomponent.databinding.FMoviesBinding
 import id.niteroomcreation.archcomponent.util.LogHelper
-import id.niteroomcreation.archcomponent.util.vo.Status
+import kotlinx.coroutines.launch
 
 /**
  * Created by Septian Adi Wijaya on 07/05/2021.
@@ -46,43 +47,53 @@ class MoviesFragment : BaseFragment<FMoviesBinding, MoviesViewModel>() {
     override fun initUI() {
         setupObserver()
         setupAdapter()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            mViewModel!!.getMovies().observe(viewLifecycleOwner, Observer {
+                LogHelper.j(TAG, it)
+
+                lifecycleScope.launch {
+                    adapter.submitData(it)
+                }
+            })
+        }
     }
 
     private fun setupObserver() {
         mViewModel = obtainViewModel(this, MoviesViewModel::class.java)
-        mViewModel!!.movies.observe(this, Observer { data ->
-
-            LogHelper.e(TAG, data, data.message)
-
-            if (data.data != null) {
-                when (data.status) {
-                    Status.SUCCESS -> {
-                        dismissLoading()
-                        adapter.submitList(data.data)
-                    }
-                    Status.LOADING -> {
-                        showLoading()
-                    }
-                    Status.ERROR -> {
-                        dismissLoading()
-                        showMessage(data.message)
-                    }
-                }
-
-            } else {
-                if (data.status != Status.LOADING) {
-                    showMessage("Data Request is not availabled")
-                    dismissLoading()
-                }
-            }
-        })
+//        mViewModel!!.movies.observe(this, Observer { data ->
+//
+//            LogHelper.e(TAG, data, data.message)
+//
+//            if (data.data != null) {
+//                when (data.status) {
+//                    Status.SUCCESS -> {
+//                        dismissLoading()
+//                        adapter.submitList(data.data)
+//                    }
+//                    Status.LOADING -> {
+//                        showLoading()
+//                    }
+//                    Status.ERROR -> {
+//                        dismissLoading()
+//                        showMessage(data.message)
+//                    }
+//                }
+//
+//            } else {
+//                if (data.status != Status.LOADING) {
+//                    showMessage("Data Request is not availabled")
+//                    dismissLoading()
+//                }
+//            }
+//        })
     }
 
     private fun setupAdapter() {
         adapter = MoviesAdapter()
 
-        mViewBinding?.listMovie?.layoutManager = LinearLayoutManager(context)
-        mViewBinding?.listMovie?.adapter = adapter
+        mViewBinding.listMovie.layoutManager = LinearLayoutManager(context)
+        mViewBinding.listMovie.adapter = adapter
     }
 
     interface MoviesListener {

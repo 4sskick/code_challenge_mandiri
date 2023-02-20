@@ -17,5 +17,8 @@ interface RemoteRepo {
     fun getMovies(@Query("language") lang: String?): Call<BaseResponse<Movies>>
 
     @GET(BuildConfig.BASE_PATH + "movie")
-    suspend fun getMovies(@Query("page") page: Int): Response<BaseResponse<Movies>>
+    suspend fun getMovies(
+        @Query("page") page: Int,
+//        @Query("size") size: Int,
+    ): Response<BaseResponse<Movies>>
 }

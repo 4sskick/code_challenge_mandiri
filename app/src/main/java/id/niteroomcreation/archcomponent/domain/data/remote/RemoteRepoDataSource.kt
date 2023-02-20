@@ -1,73 +1,62 @@
-package id.niteroomcreation.archcomponent.domain.data.remote;
+package id.niteroomcreation.archcomponent.domain.data.remote
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
-import java.util.List;
-import java.util.concurrent.Executor;
-
-import id.niteroomcreation.archcomponent.domain.data.remote.response.BaseResponse;
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies;
-import id.niteroomcreation.archcomponent.domain.data.remote.response.TvShows;
-import id.niteroomcreation.archcomponent.domain.data.remote.services.APIService;
-import id.niteroomcreation.archcomponent.domain.data.remote.utils.ApiResponse;
-import id.niteroomcreation.archcomponent.util.LogHelper;
-import retrofit2.Response;
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import id.niteroomcreation.archcomponent.domain.data.remote.RemoteRepoDataSource
+import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.services.APIService
+import id.niteroomcreation.archcomponent.domain.data.remote.utils.ApiResponse
+import id.niteroomcreation.archcomponent.util.LogHelper
+import java.util.concurrent.Executor
 
 /**
  * Created by Septian Adi Wijaya on 26/05/2021.
  * please be sure to add credential if you use people's code
  */
-public class RemoteRepoDataSource {
+class RemoteRepoDataSource(private val remoteRepo: RemoteRepo, private val executor: Executor) {
 
-    public static final String TAG = RemoteRepoDataSource.class.getSimpleName();
+    companion object {
+        val TAG = RemoteRepoDataSource::class.java.simpleName
 
-    private volatile static RemoteRepoDataSource INSTANCE;
-    private RemoteRepo remoteRepo;
-    private Executor executor;
+        @Volatile
+        private lateinit var INSTANCE: RemoteRepoDataSource
 
-    private RemoteRepoDataSource() {
-    }
-
-    private RemoteRepoDataSource(RemoteRepo remoteRepo, Executor executor) {
-        this.remoteRepo = remoteRepo;
-        this.executor = executor;
-    }
-
-    public static RemoteRepoDataSource getInstance(Executor executor) {
-        if (INSTANCE == null) {
-            synchronized (RemoteRepoDataSource.class) {
-                INSTANCE = new RemoteRepoDataSource(APIService.createService(), executor);
-            }
+        @Synchronized
+        fun getInstance(executor: Executor): RemoteRepoDataSource {
+            INSTANCE = RemoteRepoDataSource(
+                APIService.createService(), executor
+            )
+            return INSTANCE
         }
-
-        return INSTANCE;
     }
 
-    public LiveData<ApiResponse<List<Movies>>> getMovies(String lang) {
-        MutableLiveData<ApiResponse<List<Movies>>> mData = new MutableLiveData<>();
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Response<BaseResponse<Movies>> m = remoteRepo.getMovies(lang).execute();
-
-                    LogHelper.e(TAG, m.code(), m.message(), m.errorBody(), m.headers(), m.message());
-                    if (m.isSuccessful() && m.body() != null)
-
-                        mData.postValue(ApiResponse.success(m.body().getResults()));
-                    else
-                        mData.postValue(ApiResponse.error("Response service not available", null));
-                } catch (Exception e) {
-
-                    LogHelper.e(TAG, "here calling me!", e.getMessage());
-
-                    mData.postValue(ApiResponse.error(e.getMessage(), null));
-
-                    e.printStackTrace();
-                }
+    fun getMovies(lang: String?): LiveData<ApiResponse<List<Movies>>> {
+        val mData = MutableLiveData<ApiResponse<List<Movies>>>()
+        executor.execute(Runnable {
+            try {
+                val m = remoteRepo.getMovies(lang).execute()
+                LogHelper.e(TAG, m.code(), m.message(), m.errorBody(), m.headers(), m.message())
+                if (m.isSuccessful && m.body() != null) mData.postValue(
+                    ApiResponse.success(m.body()!!.results)
+                ) else mData.postValue(ApiResponse.error("Response service not available", null))
+            } catch (e: Exception) {
+                LogHelper.e(TAG, "here calling me!", e.message)
+                mData.postValue(ApiResponse.error(e.message, null))
+                e.printStackTrace()
             }
-        });
-        return mData;
+        })
+        return mData
     }
+
+//    suspend fun getMovies(page: Int): ApiResponse<List<Movies>> = try {
+//        val response = remoteRepo.getMovies(page = page)
+//        val result = response.body()
+//
+//        if (response.isSuccessful && result != null)
+//            ApiResponse.success(result.results)
+//        else ApiResponse.error("Response service not available", null)
+//    } catch (e: Exception) {
+//        e.printStackTrace()
+//        ApiResponse.error(e.message, null)
+//    }
 }

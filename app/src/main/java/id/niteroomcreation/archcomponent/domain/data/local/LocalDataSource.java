@@ -10,6 +10,7 @@ import id.niteroomcreation.archcomponent.domain.data.local.dao.EntertainmentData
 import id.niteroomcreation.archcomponent.domain.data.local.entity.FavouriteEntity;
 import id.niteroomcreation.archcomponent.domain.data.local.entity.MovieEntity;
 import id.niteroomcreation.archcomponent.domain.data.local.entity.TvShowEntity;
+import id.niteroomcreation.archcomponent.domain.di.Injector;
 
 /**
  * Created by monta on 10/06/21
@@ -26,10 +27,10 @@ public class LocalDataSource {
         db = EntertainmentDatabase.getInstance(context);
     }
 
-    public static LocalDataSource getInstance(Context context) {
+    public static LocalDataSource getInstance() {
         if (INSTANCE == null) {
             synchronized (LocalDataSource.class) {
-                INSTANCE = new LocalDataSource(context);
+                INSTANCE = new LocalDataSource(Injector.provideContext());
             }
         }
         return INSTANCE;

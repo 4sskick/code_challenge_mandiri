@@ -1,29 +1,27 @@
-package id.niteroomcreation.archcomponent.domain.data.remote.network;
+package id.niteroomcreation.archcomponent.domain.data.remote.network
 
-import java.io.IOException;
+import id.niteroomcreation.archcomponent.BuildConfig
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 
-import id.niteroomcreation.archcomponent.BuildConfig;
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
+class NetworkInterceptor : Interceptor {
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
 
-public class NetworkInterceptor implements Interceptor {
+        val request: Request = chain.request()
+        val url = request.url
+            .newBuilder()
+            .addQueryParameter("api_key", BuildConfig.API_KEY)
+            .build()
 
-    @Override
-    public Response intercept(Chain chain) throws IOException {
-        Request request = chain.request();
-        HttpUrl url = request.url()
-                .newBuilder()
-                .addQueryParameter("api_key", BuildConfig.API_KEY)
-                .build();
-
-        request = request.newBuilder()
-                .addHeader("content-type", "application/json")
+        var requestBuilder: Request.Builder =
+            request.newBuilder().method(request.method, request.body)
+                .header("content-type", "application/json")
                 .url(url)
-                .method(request.method(), request.body())
-                .build();
 
-        return chain.proceed(request);
+
+        return chain.proceed(requestBuilder.build())
     }
 }

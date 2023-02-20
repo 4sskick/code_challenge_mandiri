@@ -1,34 +1,97 @@
-package id.niteroomcreation.archcomponent.util;
+package id.niteroomcreation.archcomponent.util
 
-import android.util.Log;
-
-import java.util.Arrays;
+import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import java.util.*
 
 /**
  * Created by monta on 05/05/21
  * please make sure to use credit when using people code
- **/
-public class LogHelper {
-    private static final int STACK_TRACE_LEVELS_UP = 5;
-    private static final boolean LOGGING_ENABLED = true;
+ */
+object LogHelper {
+    private val STACK_TRACE_LEVELS_UP = 5
+    private val LOGGING_ENABLED = true
 
-    public static void e(String tag) {
+    @JvmStatic
+    fun e(tag: String?) {
         if (LOGGING_ENABLED) {
-            Log.e(tag, getClassNameMethodNameAndLineNumber() + "\n\n");
+            Log.e(
+                tag, """
+     ${getClassNameMethodNameAndLineNumber()}
+     
+     
+     """.trimIndent()
+            )
         }
     }
 
-    public static void e(String tag, Object message) {
+    @JvmStatic
+    fun e(tag: String?, message: Any) {
         if (LOGGING_ENABLED) {
-            Log.e(tag, getClassNameMethodNameAndLineNumber() + ", " + message + "\n");
+            Log.e(
+                tag, """
+     ${getClassNameMethodNameAndLineNumber()}, $message
+     
+     """.trimIndent()
+            )
         }
     }
 
-    public static void e(String tag, Object... message) {
+    @JvmStatic
+    fun e(tag: String?, vararg message: Any?) {
         if (LOGGING_ENABLED) {
-            Log.e(tag, getClassNameMethodNameAndLineNumber() + ", " + Arrays.toString(message) + "\n");
+            Log.e(
+                tag, """
+     ${getClassNameMethodNameAndLineNumber()}, ${Arrays.toString(message)}
+     
+     """.trimIndent()
+            )
         }
     }
+
+    //for a pretty print log
+    @JvmStatic
+    fun j(tag: String?) {
+        if (LOGGING_ENABLED) {
+            Log.e(
+                tag, """
+     ${getClassNameMethodNameAndLineNumber()}
+     
+     
+     """.trimIndent()
+            )
+        }
+    }
+
+    private val gson: Gson = GsonBuilder()
+        .setPrettyPrinting()
+        .create()
+
+    @JvmStatic
+    fun j(tag: String?, message: Any?) {
+        if (LOGGING_ENABLED) {
+            Log.e(
+                tag, """
+     ${getClassNameMethodNameAndLineNumber()}, ${gson.toJson(message)}
+     
+     """.trimIndent()
+            )
+        }
+    }
+
+    @JvmStatic
+    fun j(tag: String?, vararg message: Any?) {
+        if (LOGGING_ENABLED) {
+            Log.e(
+                tag, """
+     ${getClassNameMethodNameAndLineNumber()}, ${gson.toJson(message)}
+     
+     """.trimIndent()
+            )
+        }
+    }
+
 
     /**
      * Get the current line number. Note, this will only work as called from
@@ -37,8 +100,8 @@ public class LogHelper {
      *
      * @return int - Current line number.
      */
-    private static int getLineNumber() {
-        return Thread.currentThread().getStackTrace()[STACK_TRACE_LEVELS_UP].getLineNumber();
+    private fun getLineNumber(): Int {
+        return Thread.currentThread().stackTrace[STACK_TRACE_LEVELS_UP].lineNumber
     }
 
     /**
@@ -48,8 +111,8 @@ public class LogHelper {
      *
      * @return String - Current line number.
      */
-    private static String getMethodName() {
-        return Thread.currentThread().getStackTrace()[STACK_TRACE_LEVELS_UP].getMethodName();
+    private fun getMethodName(): String {
+        return Thread.currentThread().stackTrace[STACK_TRACE_LEVELS_UP].methodName
     }
 
     /**
@@ -58,9 +121,8 @@ public class LogHelper {
      *
      * @return String - String representing class name, method name, and line
      * number.
-     */
-    private static String getClassNameMethodNameAndLineNumber() {
-        return "Line " + getLineNumber() + ", " + getMethodName() + "()";
+    </line_number></method_name></class_name> */
+    private fun getClassNameMethodNameAndLineNumber(): String {
+        return "Line " + getLineNumber() + ", " + getMethodName() + "()"
     }
-
 }

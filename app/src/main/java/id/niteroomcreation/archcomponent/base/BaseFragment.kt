@@ -38,7 +38,7 @@ abstract class BaseFragment<V : ViewDataBinding, VM : BaseViewModel> : Fragment(
     abstract fun initUI()
 
     fun obtainViewModel(owner: ViewModelStoreOwner, vm: Class<VM>): VM {
-        return ViewModelProvider(owner, ViewModelFactory.getInstance(context)).get(vm)
+        return ViewModelProvider(owner, ViewModelFactory.getInstance(requireContext())).get(vm)
     }
 
     override fun onAttach(context: Context) {
@@ -60,7 +60,7 @@ abstract class BaseFragment<V : ViewDataBinding, VM : BaseViewModel> : Fragment(
     ): View? {
         mViewBinding = DataBindingUtil.inflate(inflater, layoutId, container, false)
         mViewBinding.setVariable(bindingVariable, mViewModel)
-        mViewBinding.lifecycleOwner = this
+        mViewBinding.lifecycleOwner = viewLifecycleOwner
         mViewBinding.executePendingBindings()
 
         mRoot = mViewBinding.root
