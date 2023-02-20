@@ -1,7 +1,10 @@
 package id.niteroomcreation.archcomponent.feature.detail
 
 import android.graphics.drawable.Drawable
+import android.view.View
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -14,6 +17,7 @@ import id.niteroomcreation.archcomponent.base.BaseActivity
 import id.niteroomcreation.archcomponent.databinding.ADetailBinding
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.StatusResponse.*
+import id.niteroomcreation.archcomponent.feature.detail.review.DetailReviewAdapter
 import id.niteroomcreation.archcomponent.util.LogHelper
 
 /**
@@ -36,31 +40,56 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
     override val layoutId: Int = R.layout.a_detail
     override val bindingVariable: Int = 0
 
+    private lateinit var adapter: DetailReviewAdapter
+
     override fun initUI() {
 
         supportPostponeEnterTransition()
-        setupView()
         setupObserver()
+        setupView()
     }
 
     private fun setupObserver() {
         mViewModel = obtainViewModel(this, DetailViewModel::class.java)
-        mViewModel!!.getDetail(movies!!.id!!)
 
+
+        mViewModel!!.respondResultReview.observe(this, Observer {
+            showLoading()
+            when (it.status) {
+                SUCCESS -> {
+                    dismissLoading()
+
+                    viewDataBinding.layoutBottomDetailContent.visibility = View.VISIBLE
+
+                    adapter = DetailReviewAdapter(it.body!!.results)
+                    viewDataBinding.rvReviews.layoutManager = LinearLayoutManager(this)
+                    viewDataBinding.rvReviews.adapter = adapter
+                }
+                EMPTY -> {
+                    showMessage("Review tidak ditemukan")
+                    dismissLoading()
+                }
+                ERROR -> {
+                    showMessage(it.message)
+                    dismissLoading()
+                }
+            }
+        })
         mViewModel!!.respondResult.observe(this, Observer {
 
             LogHelper.e(TAG, it)
 
+            showLoading()
             when (it.status) {
                 SUCCESS -> {
                     dismissLoading()
 
                     var genre = mutableListOf<String>()
-                    it.body!!.genres.forEach{
+                    it.body!!.genres.forEach {
                         genre.add(it.name)
                     }
 
-                    viewDataBinding!!.tagGenreLayout.setItems(genre)
+                    viewDataBinding.tagGenreLayout.setItems(genre)
                 }
                 EMPTY -> {
                     dismissLoading()
@@ -75,8 +104,6 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
     }
 
     private fun setupView() {
-
-        LogHelper.e(TAG, intent.extras?.getString(EXTRA_MODEL_ID))
 
         Glide.with(this)
             .load(
@@ -110,12 +137,23 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
             })
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .placeholder(R.drawable.ic_placeholder)
-            .into(viewDataBinding!!.imgDetailMovie)
+            .into(viewDataBinding.imgDetailMovie)
 
-        viewDataBinding!!.txtDetailName.text = movies!!.originalTitle
-        viewDataBinding!!.txtDetailDesc.text = overview
-        viewDataBinding!!.txtDetailSaveFav.setOnClickListener { showMessage("SAVED") }
+        viewDataBinding.txtDetailName.text = movies!!.originalTitle
+        viewDataBinding.txtDetailDesc.text = overview
+        viewDataBinding.txtDetailSaveFav.setOnClickListener { showMessage("SAVED") }
+        viewDataBinding.txtDetailReview.setOnClickListener {
+            viewDataBinding.layoutBottomDetailContent.visibility =
+                if (viewDataBinding.layoutBottomDetailContent.isVisible) View.GONE else View.VISIBLE
 
+            if (viewDataBinding.layoutBottomDetailContent.isVisible)
+                mViewModel!!.getMovieReview(movies!!.id!!)
+        }
+        viewDataBinding.txtDetailVideo.setOnClickListener {
+
+        }
+
+        mViewModel!!.getDetail(movies!!.id!!)
     }
 
     private val overview: String?

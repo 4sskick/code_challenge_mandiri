@@ -60,7 +60,7 @@ abstract class BaseFragment<V : ViewDataBinding, VM : BaseViewModel> : Fragment(
     ): View? {
         mViewBinding = DataBindingUtil.inflate(inflater, layoutId, container, false)
         mViewBinding.setVariable(bindingVariable, mViewModel)
-        mViewBinding.lifecycleOwner = viewLifecycleOwner
+        mViewBinding.lifecycleOwner = this
         mViewBinding.executePendingBindings()
 
         mRoot = mViewBinding.root

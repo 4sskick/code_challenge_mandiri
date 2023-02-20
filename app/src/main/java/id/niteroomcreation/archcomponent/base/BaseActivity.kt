@@ -27,7 +27,7 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel> :
 
     @JvmField
     protected var mViewModel: VM? = null
-    var viewDataBinding: V? = null
+    lateinit var viewDataBinding: V
 
     private lateinit var mToast: Toast
     private lateinit var mLoading: Dialog
@@ -56,8 +56,8 @@ abstract class BaseActivity<V : ViewDataBinding, VM : BaseViewModel> :
 
     private fun performDataBinding() {
         viewDataBinding = DataBindingUtil.setContentView(this, layoutId)
-        viewDataBinding!!.setVariable(bindingVariable, mViewModel)
-        viewDataBinding!!.executePendingBindings()
+        viewDataBinding.setVariable(bindingVariable, mViewModel)
+        viewDataBinding.executePendingBindings()
     }
 
 
