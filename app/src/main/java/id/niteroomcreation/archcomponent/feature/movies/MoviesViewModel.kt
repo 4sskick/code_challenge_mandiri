@@ -17,7 +17,6 @@ class MoviesViewModel(private val repository: RepositoryImpl) : BaseViewModel() 
         val TAG = MoviesViewModel::class.java.simpleName
     }
 
-    //    val movies: LiveData<Resource<PagedList<MovieEntity>>> = repository.getMovies()
     fun getMovies(): LiveData<PagingData<Movies>> {
         return repository.getMovies().cachedIn(viewModelScope)
     }

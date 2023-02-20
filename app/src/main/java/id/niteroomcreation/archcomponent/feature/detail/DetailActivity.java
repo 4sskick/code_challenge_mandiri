@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -17,8 +16,7 @@ import id.niteroomcreation.archcomponent.BuildConfig;
 import id.niteroomcreation.archcomponent.R;
 import id.niteroomcreation.archcomponent.base.BaseActivity;
 import id.niteroomcreation.archcomponent.databinding.ADetailBinding;
-import id.niteroomcreation.archcomponent.domain.data.local.entity.MovieEntity;
-import id.niteroomcreation.archcomponent.domain.data.local.entity.TvShowEntity;
+import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies;
 import id.niteroomcreation.archcomponent.util.LogHelper;
 
 /**
@@ -29,8 +27,9 @@ public class DetailActivity extends BaseActivity<ADetailBinding, DetailViewModel
 
     public static final String TAG = DetailActivity.class.getSimpleName();
     public static final String EXTRA_MODEL_ID = "extra.model.id";
+    public static final String EXTRA_MODEL = "extra.model";
 
-    private MovieEntity movies = null;
+    private Movies movies = null;
 
     @Override
     public int getLayoutId() {
@@ -44,51 +43,20 @@ public class DetailActivity extends BaseActivity<ADetailBinding, DetailViewModel
 
     @Override
     public void initUI() {
+
+        movies = getIntent().getParcelableExtra(EXTRA_MODEL);
+
         supportPostponeEnterTransition();
         setupObserver();
+        setupView();
     }
 
     void setupObserver() {
         mViewModel = obtainViewModel(this, DetailViewModel.class);
-
-        if (getIntent() != null && getIntent().getExtras() != null) {
-
-            //should be in format: "82332_class.TAG"
-            //String[] objName = new String[]{"82332","class.TAG"}
-            String[] objName = getIntent().getExtras().getString(EXTRA_MODEL_ID).split("_");
-            LogHelper.e(TAG, objName);
-
-            //82332
-            if (objName[0] != null) {
-                mViewModel.setSelectedEntity(Integer.parseInt(objName[0]));
-
-                if (objName[1].equals(MovieEntity.TAG)) {
-                    mViewModel.getMovieById().observe(this, new Observer<MovieEntity>() {
-                        @Override
-                        public void onChanged(MovieEntity movieEntity) {
-
-                            LogHelper.e(TAG, movieEntity);
-
-                            if (movieEntity != null)
-                                setupView(movieEntity);
-                            else
-                                throw new RuntimeException("Data doesn't found");
-                        }
-                    });
-                } else
-                    throw new RuntimeException("Obj model doesn't found!");
-            } else
-                throw new RuntimeException("Model isn't carried by parcelable arguments!");
-        } else
-            throw new RuntimeException("Model isn't carried by parcelable arguments!");
     }
 
-    void setupView(Object obj) {
+    void setupView() {
         LogHelper.e(TAG, getIntent().getExtras().getString(EXTRA_MODEL_ID));
-
-
-        if (obj instanceof MovieEntity)
-            movies = (MovieEntity) obj;
 
         Glide.with(this)
                 .load(String.format("%s%sw500/%s"
@@ -120,43 +88,22 @@ public class DetailActivity extends BaseActivity<ADetailBinding, DetailViewModel
                 .placeholder(R.drawable.ic_placeholder)
                 .into(getViewDataBinding().imgDetailMovie);
 
-        getViewDataBinding().txtDetailName.setText(movies.getName());
-        getViewDataBinding().txtDetailDesc.setText(getOverview(movies, null));
+        getViewDataBinding().txtDetailName.setText(movies.getOriginalTitle());
+        getViewDataBinding().txtDetailDesc.setText(getOverview());
         getViewDataBinding().txtDetailSaveFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                setupSavedFav(true, movies.isBookmarked());
+                showMessage("SAVED");
             }
         });
-
-        setupSavedFav(false, movies.isBookmarked());
     }
 
-    private void setupSavedFav(boolean showMsg, boolean makeItFav) {
-        getViewDataBinding().txtDetailSaveFav.setTextColor(makeItFav ?
-                getResources().getColor(R.color.colorPrimary) :
-                getResources().getColor(R.color.textColorSecondary));
-
-        if (showMsg)
-            showMessage(makeItFav ? "Disimpan pada favorit" : "Dihapus dari favorit");
-
-    }
-
-    private String getOverview(MovieEntity m, TvShowEntity t) {
-        if (m != null) {
-            if (m.getDesc().isEmpty()) {
+    private String getOverview() {
+        if (movies != null) {
+            if (movies.getOverview().isEmpty()) {
                 return "Deskripsi Kosong";
             } else
-                return m.getDesc();
-        }
-
-        if (t != null) {
-            if (t.getDesc().isEmpty()) {
-                return "Deskripsi Kosong";
-            } else
-                return t.getDesc();
+                return movies.getOverview();
         }
 
         throw new RuntimeException("Model isn't carried by parcelable arguments!");

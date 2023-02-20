@@ -16,6 +16,5 @@ interface RepositoryImpl {
 
     fun getMovies():LiveData<PagingData<Movies>>
 
-//    fun getMovies(): LiveData<Resource<PagedList<MovieEntity>>>
-    fun getMovieById(id: Int): LiveData<MovieEntity>
+    suspend fun getMovieById(id: Int): LiveData<MovieEntity>
 }

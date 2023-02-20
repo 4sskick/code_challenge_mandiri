@@ -94,6 +94,7 @@ class MoviesAdapter : PagingDataAdapter<Movies, MoviesAdapter.ViewHolder>(DIFF_C
                                 DetailActivity.EXTRA_MODEL_ID,
                                 item.id.toString() + "_" + MovieEntity.TAG
                             )
+                            it.putExtra(DetailActivity.EXTRA_MODEL, item)
                         },
                     opt.toBundle()
                 )

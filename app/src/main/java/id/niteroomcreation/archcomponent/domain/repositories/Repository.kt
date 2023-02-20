@@ -30,7 +30,7 @@ class Repository (
         ).liveData
     }
 
-    override fun getMovieById(id: Int): LiveData<MovieEntity> {
+    override suspend fun getMovieById(id: Int): LiveData<MovieEntity> {
 //        return MutableLiveData(localDataSource.getMovieById(id.toLong()))
         return MutableLiveData()
     }

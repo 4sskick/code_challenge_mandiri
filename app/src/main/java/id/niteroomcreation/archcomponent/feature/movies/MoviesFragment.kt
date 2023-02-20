@@ -61,32 +61,6 @@ class MoviesFragment : BaseFragment<FMoviesBinding, MoviesViewModel>() {
 
     private fun setupObserver() {
         mViewModel = obtainViewModel(this, MoviesViewModel::class.java)
-//        mViewModel!!.movies.observe(this, Observer { data ->
-//
-//            LogHelper.e(TAG, data, data.message)
-//
-//            if (data.data != null) {
-//                when (data.status) {
-//                    Status.SUCCESS -> {
-//                        dismissLoading()
-//                        adapter.submitList(data.data)
-//                    }
-//                    Status.LOADING -> {
-//                        showLoading()
-//                    }
-//                    Status.ERROR -> {
-//                        dismissLoading()
-//                        showMessage(data.message)
-//                    }
-//                }
-//
-//            } else {
-//                if (data.status != Status.LOADING) {
-//                    showMessage("Data Request is not availabled")
-//                    dismissLoading()
-//                }
-//            }
-//        })
     }
 
     private fun setupAdapter() {
