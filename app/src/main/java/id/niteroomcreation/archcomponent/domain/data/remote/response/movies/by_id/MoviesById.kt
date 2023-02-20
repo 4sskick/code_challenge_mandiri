@@ -4,6 +4,7 @@ package id.niteroomcreation.archcomponent.domain.data.remote.response.movies.by_
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import id.niteroomcreation.archcomponent.domain.data.remote.response.genre.Genre
+import id.niteroomcreation.archcomponent.domain.data.remote.response.genre.GenreX
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -15,7 +16,7 @@ data class MoviesById(
     @field:SerializedName("budget")
     val budget: Int,
     @field:SerializedName("genres")
-    val genres: List<Genre>? = null,
+    val genres: List<GenreX>,
     @field:SerializedName("homepage")
     val homepage: String,
     @field:SerializedName("id")

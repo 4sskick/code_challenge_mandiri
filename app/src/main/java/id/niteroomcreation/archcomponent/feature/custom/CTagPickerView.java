@@ -18,9 +18,12 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.res.ResourcesCompat;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +31,7 @@ import java.util.List;
 import java.util.Random;
 
 import id.niteroomcreation.archcomponent.R;
+import id.niteroomcreation.archcomponent.domain.data.remote.response.genre.Genre;
 import id.niteroomcreation.archcomponent.util.CommonUtils;
 
 /**
@@ -135,7 +139,7 @@ public class CTagPickerView extends LinearLayout {
      * Custom Methods
      * ==============
      */
-    public void setItems(List<String> items) {
+    public void setItems(@NotNull List<String> items) {
         mItems = items;
         drawItemView();
     }

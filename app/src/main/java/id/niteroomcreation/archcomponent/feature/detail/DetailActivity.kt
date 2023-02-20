@@ -39,12 +39,14 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
     override fun initUI() {
 
         supportPostponeEnterTransition()
-        setupObserver()
         setupView()
+        setupObserver()
     }
 
     private fun setupObserver() {
         mViewModel = obtainViewModel(this, DetailViewModel::class.java)
+        mViewModel!!.getDetail(movies!!.id!!)
+
         mViewModel!!.respondResult.observe(this, Observer {
 
             LogHelper.e(TAG, it)
@@ -52,11 +54,17 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
             when (it.status) {
                 SUCCESS -> {
                     dismissLoading()
-                    viewDataBinding!!.tagGenreLayout.setItems(it.body.genres)
+
+                    var genre = mutableListOf<String>()
+                    it.body!!.genres.forEach{
+                        genre.add(it.name)
+                    }
+
+                    viewDataBinding!!.tagGenreLayout.setItems(genre)
                 }
                 EMPTY -> {
                     dismissLoading()
-                    showMessage("Data detail tidak ditemukan")
+//                    showMessage("Data detail tidak ditemukan")
                 }
                 ERROR -> {
                     dismissLoading()
@@ -108,7 +116,6 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
         viewDataBinding!!.txtDetailDesc.text = overview
         viewDataBinding!!.txtDetailSaveFav.setOnClickListener { showMessage("SAVED") }
 
-        mViewModel!!.getDetail(movies!!.id!!)
     }
 
     private val overview: String?
