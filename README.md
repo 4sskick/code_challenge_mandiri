@@ -15,3 +15,4 @@
 
 ### NB:
 - trailer movie not found on API provider
+- main feature & used code already using Kotlin, the rest of code which unused & un-implemented still on Java
