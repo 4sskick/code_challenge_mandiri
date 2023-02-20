@@ -1,7 +1,6 @@
 package id.niteroomcreation.archcomponent.domain.repositories
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -12,6 +11,7 @@ import id.niteroomcreation.archcomponent.domain.data.remote.RemoteRepoDataSource
 import id.niteroomcreation.archcomponent.domain.data.remote.response.BaseResponse
 import id.niteroomcreation.archcomponent.domain.data.remote.response.genre.Genre
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.by_id.MoviesById
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.reviews.MovieReviews
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.ApiResponse
 import id.niteroomcreation.archcomponent.util.AppExecutors
@@ -20,7 +20,7 @@ import id.niteroomcreation.archcomponent.util.AppExecutors
  * Created by Septian Adi Wijaya on 27/05/2021.
  * please be sure to add credential if you use people's code
  */
-class Repository (
+class Repository(
     private val remoteRepoDataSource: RemoteRepoDataSource,
     private val localDataSource: LocalDataSource,
     private val appExecutors: AppExecutors
@@ -33,8 +33,8 @@ class Repository (
         ).liveData
     }
 
-    override suspend fun getMovieById(id: Int): LiveData<Movies> {
-        return MutableLiveData()
+    override suspend fun getMovieById(id: Int): ApiResponse<MoviesById> {
+        return remoteRepoDataSource.getMovieById(id)
     }
 
     override suspend fun getGenre(): ApiResponse<Genre> {

@@ -1,6 +1,7 @@
 package id.niteroomcreation.archcomponent.feature.detail
 
 import android.graphics.drawable.Drawable
+import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -12,6 +13,7 @@ import id.niteroomcreation.archcomponent.R
 import id.niteroomcreation.archcomponent.base.BaseActivity
 import id.niteroomcreation.archcomponent.databinding.ADetailBinding
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.utils.StatusResponse.*
 import id.niteroomcreation.archcomponent.util.LogHelper
 
 /**
@@ -43,6 +45,25 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
 
     private fun setupObserver() {
         mViewModel = obtainViewModel(this, DetailViewModel::class.java)
+        mViewModel!!.respondResult.observe(this, Observer {
+
+            LogHelper.e(TAG, it)
+
+            when (it.status) {
+                SUCCESS -> {
+                    dismissLoading()
+
+                }
+                EMPTY -> {
+                    dismissLoading()
+                    showMessage("Data detail tidak ditemukan")
+                }
+                ERROR -> {
+                    dismissLoading()
+                    showMessage(it.message)
+                }
+            }
+        })
     }
 
     private fun setupView() {
@@ -86,6 +107,8 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
         viewDataBinding!!.txtDetailName.text = movies!!.originalTitle
         viewDataBinding!!.txtDetailDesc.text = overview
         viewDataBinding!!.txtDetailSaveFav.setOnClickListener { showMessage("SAVED") }
+
+        mViewModel!!.getDetail(movies!!.id!!)
     }
 
     private val overview: String?
