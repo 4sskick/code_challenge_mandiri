@@ -70,25 +70,8 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
                 lifecycleScope.launch {
                     adapter.submitData(it)
                 }
-//            when (it.status) {
-//                SUCCESS -> {
-//                    dismissLoading()
-//
-//
-//                    viewDataBinding.rvReviews.visibility =
-//                        if (adapter.itemCount > 0) View.VISIBLE else View.GONE
-//
-//                }
-//                EMPTY -> {
-//                    showMessage("Review tidak ditemukan")
-//                    dismissLoading()
-//                }
-//                ERROR -> {
-//                    showMessage(it.message)
-//                    dismissLoading()
-//                }
-//            }
         })
+
         mViewModel!!.respondResult.observe(this, Observer {
 
             LogHelper.e(TAG, it)
@@ -107,7 +90,6 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
                 }
                 EMPTY -> {
                     dismissLoading()
-//                    showMessage("Data detail tidak ditemukan")
                 }
                 ERROR -> {
                     dismissLoading()
@@ -162,7 +144,8 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
 
         }
         viewDataBinding.txtDetailVideo.setOnClickListener {
-
+            //due to lack of link to video from API, just hardcode the message here!
+            showMessage("Video trailer tidak ditemukan")
         }
 
         mViewModel!!.getDetail(movies!!.id!!)

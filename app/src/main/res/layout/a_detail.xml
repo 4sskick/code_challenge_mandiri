@@ -123,7 +123,7 @@
                         android:gravity="center"
                         android:text="@string/la_barcode"
                         android:textColor="@color/black"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txt_detail_review"
@@ -134,7 +134,7 @@
                         android:background="@drawable/bg_ic_circular"
                         android:fontFamily="@font/line_awesome"
                         android:gravity="center"
-                        android:text="@string/la_search"
+                        android:text="@string/la_pencil_square"
                         android:textColor="@color/black"
                         android:visibility="visible" />
 
@@ -147,7 +147,7 @@
                         android:background="@drawable/bg_ic_circular"
                         android:fontFamily="@font/line_awesome"
                         android:gravity="center"
-                        android:text="@string/la_refresh"
+                        android:text="@string/la_search"
                         android:textColor="@color/black"
                         android:visibility="visible" />
 
