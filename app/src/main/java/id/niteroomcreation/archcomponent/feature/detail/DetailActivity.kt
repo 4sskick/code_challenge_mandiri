@@ -1,111 +1,100 @@
-package id.niteroomcreation.archcomponent.feature.detail;
+package id.niteroomcreation.archcomponent.feature.detail
 
-import android.graphics.drawable.Drawable;
-import android.view.View;
-
-import androidx.annotation.Nullable;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-
-import id.niteroomcreation.archcomponent.BuildConfig;
-import id.niteroomcreation.archcomponent.R;
-import id.niteroomcreation.archcomponent.base.BaseActivity;
-import id.niteroomcreation.archcomponent.databinding.ADetailBinding;
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies;
-import id.niteroomcreation.archcomponent.util.LogHelper;
+import android.graphics.drawable.Drawable
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import id.niteroomcreation.archcomponent.BuildConfig
+import id.niteroomcreation.archcomponent.R
+import id.niteroomcreation.archcomponent.base.BaseActivity
+import id.niteroomcreation.archcomponent.databinding.ADetailBinding
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
+import id.niteroomcreation.archcomponent.util.LogHelper
 
 /**
  * Created by Septian Adi Wijaya on 09/05/2021.
  * please be sure to add credential if you use people's code
  */
-public class DetailActivity extends BaseActivity<ADetailBinding, DetailViewModel> {
+class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
 
-    public static final String TAG = DetailActivity.class.getSimpleName();
-    public static final String EXTRA_MODEL_ID = "extra.model.id";
-    public static final String EXTRA_MODEL = "extra.model";
+    companion object {
+        val TAG = DetailActivity::class.java.simpleName
 
-    private Movies movies = null;
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.a_detail;
+        const val EXTRA_MODEL_ID = "extra.model.id"
+        const val EXTRA_MODEL = "extra.model"
     }
 
-    @Override
-    public int getBindingVariable() {
-        return 0;
+    private val movies: Movies? by lazy {
+        intent.getParcelableExtra<Movies>(EXTRA_MODEL)
     }
 
-    @Override
-    public void initUI() {
+    override val layoutId: Int = R.layout.a_detail
+    override val bindingVariable: Int = 0
 
-        movies = getIntent().getParcelableExtra(EXTRA_MODEL);
+    override fun initUI() {
 
-        supportPostponeEnterTransition();
-        setupObserver();
-        setupView();
+        supportPostponeEnterTransition()
+        setupObserver()
+        setupView()
     }
 
-    void setupObserver() {
-        mViewModel = obtainViewModel(this, DetailViewModel.class);
+    private fun setupObserver() {
+        mViewModel = obtainViewModel(this, DetailViewModel::class.java)
     }
 
-    void setupView() {
-        LogHelper.e(TAG, getIntent().getExtras().getString(EXTRA_MODEL_ID));
+    private fun setupView() {
+
+        LogHelper.e(TAG, intent.extras?.getString(EXTRA_MODEL_ID))
 
         Glide.with(this)
-                .load(String.format("%s%sw500/%s"
-                        , BuildConfig.BASE_URL_IMG
-                        , BuildConfig.BASE_PATH_IMG
-                        , movies != null ?
-                                movies.getPosterPath() : R.drawable.ic_placeholder))
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e
-                            , Object model
-                            , Target<Drawable> target
-                            , boolean isFirstResource) {
-                        return false;
-                    }
+            .load(
+                String.format(
+                    "%s%sw500/%s",
+                    BuildConfig.BASE_URL_IMG,
+                    BuildConfig.BASE_PATH_IMG,
+                    if (movies != null) movies!!.posterPath else R.drawable.ic_placeholder
+                )
+            )
+            .listener(object : RequestListener<Drawable?> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any,
+                    target: Target<Drawable?>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    return false
+                }
 
-                    @Override
-                    public boolean onResourceReady(Drawable resource
-                            , Object model
-                            , Target<Drawable> target
-                            , DataSource dataSource
-                            , boolean isFirstResource) {
-                        DetailActivity.this.supportStartPostponedEnterTransition();
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any,
+                    target: Target<Drawable?>,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    supportStartPostponedEnterTransition()
+                    return false
+                }
+            })
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+            .placeholder(R.drawable.ic_placeholder)
+            .into(viewDataBinding!!.imgDetailMovie)
 
-                        return false;
-                    }
-                })
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .placeholder(R.drawable.ic_placeholder)
-                .into(getViewDataBinding().imgDetailMovie);
+        viewDataBinding!!.txtDetailName.text = movies!!.originalTitle
+        viewDataBinding!!.txtDetailDesc.text = overview
+        viewDataBinding!!.txtDetailSaveFav.setOnClickListener { showMessage("SAVED") }
+    }
 
-        getViewDataBinding().txtDetailName.setText(movies.getOriginalTitle());
-        getViewDataBinding().txtDetailDesc.setText(getOverview());
-        getViewDataBinding().txtDetailSaveFav.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showMessage("SAVED");
+    private val overview: String?
+        get() {
+            if (movies != null) {
+                return if (movies!!.overview!!.isEmpty()) {
+                    "Deskripsi Kosong"
+                } else movies!!.overview
             }
-        });
-    }
-
-    private String getOverview() {
-        if (movies != null) {
-            if (movies.getOverview().isEmpty()) {
-                return "Deskripsi Kosong";
-            } else
-                return movies.getOverview();
+            throw RuntimeException("Model isn't carried by parcelable arguments!")
         }
-
-        throw new RuntimeException("Model isn't carried by parcelable arguments!");
-    }
 }

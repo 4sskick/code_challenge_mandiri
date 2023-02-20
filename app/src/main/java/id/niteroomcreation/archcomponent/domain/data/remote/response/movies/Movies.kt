@@ -1,4 +1,4 @@
-package id.niteroomcreation.archcomponent.domain.data.remote.response
+package id.niteroomcreation.archcomponent.domain.data.remote.response.movies
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

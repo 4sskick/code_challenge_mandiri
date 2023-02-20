@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import id.niteroomcreation.archcomponent.base.BaseViewModel
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
 import id.niteroomcreation.archcomponent.domain.repositories.RepositoryImpl
 
 /**

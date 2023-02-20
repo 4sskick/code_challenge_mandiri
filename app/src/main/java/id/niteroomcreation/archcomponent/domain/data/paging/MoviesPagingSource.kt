@@ -2,7 +2,7 @@ package id.niteroomcreation.archcomponent.domain.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
 import id.niteroomcreation.archcomponent.domain.data.remote.services.APIConfig
 import id.niteroomcreation.archcomponent.util.LogHelper
 

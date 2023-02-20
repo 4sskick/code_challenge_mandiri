@@ -3,7 +3,7 @@ package id.niteroomcreation.archcomponent.util.testing
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
 import id.niteroomcreation.archcomponent.domain.data.remote.response.TvShows
 import org.json.JSONException
 import org.json.JSONObject

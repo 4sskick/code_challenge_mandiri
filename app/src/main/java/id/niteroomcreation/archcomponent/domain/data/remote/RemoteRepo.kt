@@ -2,7 +2,8 @@ package id.niteroomcreation.archcomponent.domain.data.remote
 
 import id.niteroomcreation.archcomponent.BuildConfig
 import id.niteroomcreation.archcomponent.domain.data.remote.response.BaseResponse
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.response.genre.Genre
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET
@@ -21,4 +22,7 @@ interface RemoteRepo {
         @Query("page") page: Int,
 //        @Query("size") size: Int,
     ): Response<BaseResponse<Movies>>
+
+    @GET("3/genre/movie")
+    suspend fun getGenre(): Response<Genre>
 }

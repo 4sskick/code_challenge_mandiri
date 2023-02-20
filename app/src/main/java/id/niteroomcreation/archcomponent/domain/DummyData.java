@@ -6,7 +6,7 @@ import java.util.List;
 import id.niteroomcreation.archcomponent.domain.data.local.entity.FavouriteEntity;
 import id.niteroomcreation.archcomponent.domain.data.local.entity.MovieEntity;
 import id.niteroomcreation.archcomponent.domain.data.local.entity.TvShowEntity;
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies;
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies;
 import id.niteroomcreation.archcomponent.domain.data.remote.response.TvShows;
 import id.niteroomcreation.archcomponent.util.testing.JsonHelper;
 

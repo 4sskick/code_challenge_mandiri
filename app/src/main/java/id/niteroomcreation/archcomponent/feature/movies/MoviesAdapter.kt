@@ -15,9 +15,8 @@ import id.niteroomcreation.archcomponent.BuildConfig
 import id.niteroomcreation.archcomponent.R
 import id.niteroomcreation.archcomponent.databinding.IMoviesBinding
 import id.niteroomcreation.archcomponent.domain.data.local.entity.MovieEntity
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
 import id.niteroomcreation.archcomponent.feature.detail.DetailActivity
-import id.niteroomcreation.archcomponent.feature.movies.MoviesAdapter
 import id.niteroomcreation.archcomponent.util.BlurTransformation
 
 /**

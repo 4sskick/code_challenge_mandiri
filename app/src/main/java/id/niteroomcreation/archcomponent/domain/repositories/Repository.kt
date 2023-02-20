@@ -7,10 +7,11 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
 import id.niteroomcreation.archcomponent.domain.data.local.LocalDataSource
-import id.niteroomcreation.archcomponent.domain.data.local.entity.MovieEntity
 import id.niteroomcreation.archcomponent.domain.data.paging.MoviesPagingSource
 import id.niteroomcreation.archcomponent.domain.data.remote.RemoteRepoDataSource
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.response.genre.Genre
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.utils.ApiResponse
 import id.niteroomcreation.archcomponent.util.AppExecutors
 
 /**
@@ -30,9 +31,12 @@ class Repository (
         ).liveData
     }
 
-    override suspend fun getMovieById(id: Int): LiveData<MovieEntity> {
-//        return MutableLiveData(localDataSource.getMovieById(id.toLong()))
+    override suspend fun getMovieById(id: Int): LiveData<Movies> {
         return MutableLiveData()
+    }
+
+    override suspend fun getGenre(): ApiResponse<Genre> {
+        return remoteRepoDataSource.getGenre()
     }
 
     companion object {

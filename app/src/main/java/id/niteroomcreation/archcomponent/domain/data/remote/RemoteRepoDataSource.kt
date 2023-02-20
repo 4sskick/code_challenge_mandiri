@@ -2,8 +2,9 @@ package id.niteroomcreation.archcomponent.domain.data.remote
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import id.niteroomcreation.archcomponent.domain.data.remote.RemoteRepoDataSource
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.response.genre.Genre
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.services.APIConfig
 import id.niteroomcreation.archcomponent.domain.data.remote.services.APIService
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.ApiResponse
 import id.niteroomcreation.archcomponent.util.LogHelper
@@ -35,10 +36,13 @@ class RemoteRepoDataSource(private val remoteRepo: RemoteRepo, private val execu
         executor.execute(Runnable {
             try {
                 val m = remoteRepo.getMovies(lang).execute()
+
                 LogHelper.e(TAG, m.code(), m.message(), m.errorBody(), m.headers(), m.message())
-                if (m.isSuccessful && m.body() != null) mData.postValue(
-                    ApiResponse.success(m.body()!!.results)
-                ) else mData.postValue(ApiResponse.error("Response service not available", null))
+
+                if (m.isSuccessful && m.body() != null)
+                    mData.postValue(ApiResponse.success(m.body()!!.results))
+                else
+                    mData.postValue(ApiResponse.error("Response service not available", null))
             } catch (e: Exception) {
                 LogHelper.e(TAG, "here calling me!", e.message)
                 mData.postValue(ApiResponse.error(e.message, null))
@@ -48,15 +52,18 @@ class RemoteRepoDataSource(private val remoteRepo: RemoteRepo, private val execu
         return mData
     }
 
-//    suspend fun getMovies(page: Int): ApiResponse<List<Movies>> = try {
-//        val response = remoteRepo.getMovies(page = page)
-//        val result = response.body()
-//
-//        if (response.isSuccessful && result != null)
-//            ApiResponse.success(result.results)
-//        else ApiResponse.error("Response service not available", null)
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//        ApiResponse.error(e.message, null)
-//    }
+    suspend fun getMovieById(id:Int):ApiResponse<>
+
+    suspend fun getGenre(): ApiResponse<Genre> = try {
+        val response = APIConfig.getApi().getGenre()
+        val result = response.body()
+
+        if (response.isSuccessful && result != null)
+            ApiResponse.success(result)
+        else
+            ApiResponse.error("Response service not available", null)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ApiResponse.error(e.message, null)
+    }
 }

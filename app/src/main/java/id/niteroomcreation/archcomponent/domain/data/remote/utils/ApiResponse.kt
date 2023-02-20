@@ -1,43 +1,24 @@
-package id.niteroomcreation.archcomponent.domain.data.remote.utils;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import static id.niteroomcreation.archcomponent.domain.data.remote.utils.StatusResponse.EMPTY;
-import static id.niteroomcreation.archcomponent.domain.data.remote.utils.StatusResponse.ERROR;
-import static id.niteroomcreation.archcomponent.domain.data.remote.utils.StatusResponse.SUCCESS;
+package id.niteroomcreation.archcomponent.domain.data.remote.utils
 
 /**
  * Created by Septian Adi Wijaya on 11/06/2021.
  * please be sure to add credential if you use people's code
  */
-public class ApiResponse<T> {
+class ApiResponse<T>(val status: StatusResponse, val body: T?, val message: String?) {
+    companion object {
+        @JvmStatic
+        fun <T> success(body: T): ApiResponse<T> {
+            return ApiResponse(StatusResponse.SUCCESS, body, null)
+        }
 
-    @NonNull
-    public final StatusResponse status;
+        @JvmStatic
+        fun <T> empty(msg: String?, body: T?): ApiResponse<T> {
+            return ApiResponse(StatusResponse.EMPTY, body, msg)
+        }
 
-    @Nullable
-    public final String message;
-
-    @Nullable
-    public final T body;
-
-    public ApiResponse(@NonNull StatusResponse status, @Nullable T body, @Nullable String message) {
-        this.status = status;
-        this.body = body;
-        this.message = message;
+        @JvmStatic
+        fun <T> error(msg: String?, body: T?): ApiResponse<T> {
+            return ApiResponse(StatusResponse.ERROR, body, msg)
+        }
     }
-
-    public static <T> ApiResponse<T> success(@Nullable T body) {
-        return new ApiResponse<>(SUCCESS, body, null);
-    }
-
-    public static <T> ApiResponse<T> empty(String msg, @Nullable T body) {
-        return new ApiResponse<>(EMPTY, body, msg);
-    }
-
-    public static <T> ApiResponse<T> error(String msg, @Nullable T body) {
-        return new ApiResponse<>(ERROR, body, msg);
-    }
-
 }

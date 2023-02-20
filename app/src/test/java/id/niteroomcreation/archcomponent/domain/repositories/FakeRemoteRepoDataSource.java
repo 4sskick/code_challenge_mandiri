@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-import id.niteroomcreation.archcomponent.domain.data.remote.response.Movies;
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies;
 import id.niteroomcreation.archcomponent.domain.data.remote.response.TvShows;
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.ApiResponse;
 import id.niteroomcreation.archcomponent.util.testing.EspressoIdlingResource;
