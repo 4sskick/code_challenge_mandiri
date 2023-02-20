@@ -52,7 +52,7 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
             when (it.status) {
                 SUCCESS -> {
                     dismissLoading()
-
+                    viewDataBinding!!.tagGenreLayout.setItems(it.body.genres)
                 }
                 EMPTY -> {
                     dismissLoading()

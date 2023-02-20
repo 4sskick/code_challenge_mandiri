@@ -15,7 +15,7 @@ data class MoviesById(
     @field:SerializedName("budget")
     val budget: Int,
     @field:SerializedName("genres")
-    val genres: List<Genre>,
+    val genres: List<Genre>? = null,
     @field:SerializedName("homepage")
     val homepage: String,
     @field:SerializedName("id")

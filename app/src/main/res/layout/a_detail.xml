@@ -87,6 +87,16 @@
                             android:textColor="@color/white"
                             tools:text="@string/lorem_title" />
 
+                        <id.niteroomcreation.archcomponent.feature.custom.CTagPickerView
+                            android:id="@+id/tag_genre_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="start"
+                            app:tp_randomColor="true"
+                            app:tp_textPaddingBottom="@dimen/padding_xxxsmall"
+                            app:tp_textPaddingLeft="@dimen/padding_xxxsmall"
+                            app:tp_textPaddingRight="@dimen/padding_xxxsmall"
+                            app:tp_textPaddingTop="@dimen/padding_xxxsmall" />
                     </LinearLayout>
                 </ScrollView>
 
@@ -114,7 +124,7 @@
                         android:gravity="center"
                         android:text="@string/la_barcode"
                         android:textColor="@color/black"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txt_detail_review"
@@ -127,7 +137,7 @@
                         android:gravity="center"
                         android:text="@string/la_search"
                         android:textColor="@color/black"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txt_detail_video"
@@ -140,7 +150,7 @@
                         android:gravity="center"
                         android:text="@string/la_refresh"
                         android:textColor="@color/black"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txt_detail_save_fav"
