@@ -23,7 +23,6 @@ interface RemoteRepo {
     @GET(BuildConfig.BASE_PATH + "movie")
     suspend fun getMovies(
         @Query("page") page: Int,
-//        @Query("size") size: Int,
     ): Response<BaseResponse<Movies>>
 
     @GET("3/movie/{movie_id}")

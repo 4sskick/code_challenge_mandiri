@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider
 import id.niteroomcreation.archcomponent.domain.di.Injector.provideRepository
 import id.niteroomcreation.archcomponent.feature.dashboard.DashboardViewModel
 import id.niteroomcreation.archcomponent.feature.detail.DetailViewModel
-import id.niteroomcreation.archcomponent.feature.empty.EmptyViewModel
 import id.niteroomcreation.archcomponent.feature.movies.MoviesViewModel
 import id.niteroomcreation.archcomponent.feature.splash.SplashViewModel
 
@@ -38,8 +37,7 @@ class ViewModelFactory :
             return MoviesViewModel(provideRepository()) as T
         } else if (modelClass.isAssignableFrom(SplashViewModel::class.java)) {
             return SplashViewModel(provideRepository()) as T
-        } else if (modelClass.isAssignableFrom(EmptyViewModel::class.java))
-            return EmptyViewModel(provideRepository()) as T
+        }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }
 }

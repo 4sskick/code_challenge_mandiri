@@ -5,6 +5,8 @@ import android.view.View
 import androidx.core.util.Pair
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.niteroomcreation.archcomponent.R
 import id.niteroomcreation.archcomponent.base.BaseFragment
@@ -66,8 +68,20 @@ class MoviesFragment : BaseFragment<FMoviesBinding, MoviesViewModel>() {
     private fun setupAdapter() {
         adapter = MoviesAdapter()
 
+        adapter.addLoadStateListener { cLoadState: CombinedLoadStates ->
+            if (cLoadState.refresh is LoadState.Loading)
+                showLoading()
+            else if (cLoadState.refresh is LoadState.Error) {
+                showLoading()
+                showMessage("Terjadi kesalahan saat request data")
+                dismissLoading()
+
+            } else if (cLoadState.refresh is LoadState.NotLoading)
+                dismissLoading()
+        }
+
         mViewBinding.listMovie.layoutManager = LinearLayoutManager(context)
-        mViewBinding.listMovie.adapter = adapter
+        mViewBinding.listMovie.adapter = adapter.withLoadStateFooter(MovieAdapterFooter())
     }
 
     interface MoviesListener {

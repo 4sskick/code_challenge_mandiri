@@ -5,6 +5,8 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -19,6 +21,7 @@ import id.niteroomcreation.archcomponent.databinding.ADetailBinding
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.StatusResponse.*
 import id.niteroomcreation.archcomponent.feature.detail.review.DetailReviewAdapter
+import id.niteroomcreation.archcomponent.feature.movies.MovieAdapterFooter
 import id.niteroomcreation.archcomponent.util.LogHelper
 import kotlinx.coroutines.launch
 
@@ -55,17 +58,15 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
     private fun setupAdapter() {
 
         adapter = DetailReviewAdapter()
+
         viewDataBinding.rvReviews.layoutManager = LinearLayoutManager(this)
-        viewDataBinding.rvReviews.adapter = adapter
+        viewDataBinding.rvReviews.adapter = adapter.withLoadStateFooter(MovieAdapterFooter())
     }
 
     private fun setupObserver() {
         mViewModel = obtainViewModel(this, DetailViewModel::class.java)
 
         mViewModel!!.getMovieReview(movies!!.id!!).observe(this, Observer {
-
-            LogHelper.j(TAG, it)
-
             if (it != null)
                 lifecycleScope.launch {
                     adapter.submitData(it)
@@ -139,13 +140,21 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
         viewDataBinding.txtDetailDesc.text = overview
         viewDataBinding.txtDetailSaveFav.setOnClickListener { showMessage("SAVED") }
         viewDataBinding.txtDetailReview.setOnClickListener {
-            viewDataBinding.layoutBottomDetailContent.visibility =
-                if (viewDataBinding.layoutBottomDetailContent.isVisible) View.GONE else View.VISIBLE
+            if (adapter.itemCount > 0) {
+                viewDataBinding.layoutBottomDetailContent.visibility =
+                    if (viewDataBinding.layoutBottomDetailContent.isVisible)
+                        View.GONE
+                    else View.VISIBLE
+            } else {
+                viewDataBinding.layoutBottomDetailContent.visibility = View.GONE
+                showMessage("Review film tidak ditemukan")
+            }
+
 
         }
         viewDataBinding.txtDetailVideo.setOnClickListener {
             //due to lack of link to video from API, just hardcode the message here!
-            showMessage("Video trailer tidak ditemukan")
+            showMessage("Trailer film tidak ditemukan")
         }
 
         mViewModel!!.getDetail(movies!!.id!!)

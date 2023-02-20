@@ -15,7 +15,6 @@ import id.niteroomcreation.archcomponent.domain.data.local.entity.TvShowEntity;
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies;
 import id.niteroomcreation.archcomponent.domain.data.remote.response.TvShows;
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.ApiResponse;
-import id.niteroomcreation.archcomponent.domain.data.remote.utils.NetworkBoundResource;
 import id.niteroomcreation.archcomponent.util.AppExecutors;
 import id.niteroomcreation.archcomponent.util.vo.Resource;
 
