@@ -1,9 +1,11 @@
 package id.niteroomcreation.archcomponent.feature.detail
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import id.niteroomcreation.archcomponent.base.BaseViewModel
-import id.niteroomcreation.archcomponent.domain.data.remote.response.BaseResponse
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.by_id.MoviesById
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.reviews.MovieReviews
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.ApiResponse
@@ -19,7 +21,7 @@ class DetailViewModel(private val repository: RepositoryImpl) : BaseViewModel() 
     private var respondResult_ = MutableLiveData<ApiResponse<MoviesById>>()
     val respondResult = respondResult_
 
-    private var respondResultReview_ = MutableLiveData<ApiResponse<BaseResponse<MovieReviews>>>()
+    private var respondResultReview_ = MutableLiveData<PagingData<MovieReviews>>()
     val respondResultReview = respondResultReview_
 
     fun getDetail(id: Int) {
@@ -28,10 +30,8 @@ class DetailViewModel(private val repository: RepositoryImpl) : BaseViewModel() 
         }
     }
 
-    fun getMovieReview(id: Int) {
-        viewModelScope.launch {
-            respondResultReview_.postValue(repository.getReviewByMovie(id))
-        }
+    fun getMovieReview(id: Int): LiveData<PagingData<MovieReviews>> {
+        return repository.getReviewByMovie(id).cachedIn(viewModelScope)
     }
 
 }

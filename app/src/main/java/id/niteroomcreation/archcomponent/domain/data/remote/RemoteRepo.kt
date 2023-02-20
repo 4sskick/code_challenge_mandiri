@@ -34,5 +34,8 @@ interface RemoteRepo {
     suspend fun getGenre(): Response<Genre>
 
     @GET("3/movie/{movie_id}/reviews")
-    suspend fun getReviewByMovie(@Path("movie_id") id: Int): Response<BaseResponse<MovieReviews>>
+    suspend fun getReviewByMovie(
+        @Path("movie_id") id: Int,
+        @Query("page") page: Int,
+    ): Response<BaseResponse<MovieReviews>>
 }

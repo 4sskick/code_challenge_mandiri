@@ -82,7 +82,7 @@ class RemoteRepoDataSource(private val remoteRepo: RemoteRepo, private val execu
     }
 
     suspend fun getReviewByMovie(movieId: Int): ApiResponse<BaseResponse<MovieReviews>> = try {
-        val response = APIConfig.getApi().getReviewByMovie(movieId)
+        val response = APIConfig.getApi().getReviewByMovie(movieId, page = 1)
         val result = response.body()
 
         if (response.isSuccessful && result != null)

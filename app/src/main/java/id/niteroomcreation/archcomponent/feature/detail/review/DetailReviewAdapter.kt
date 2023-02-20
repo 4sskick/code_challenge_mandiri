@@ -4,6 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import id.niteroomcreation.archcomponent.R
@@ -17,11 +19,24 @@ import id.niteroomcreation.archcomponent.util.LogHelper
  * Created by Septian Adi Wijaya on 20/02/2023.
  * please be sure to add credential if you use people's code
  */
-class DetailReviewAdapter(private val dataReviews: List<MovieReviews>) :
-    RecyclerView.Adapter<DetailReviewAdapter.ViewHolder>() {
+class DetailReviewAdapter() :
+    PagingDataAdapter<MovieReviews, DetailReviewAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         val TAG = DetailReviewAdapter::class.java.simpleName
+
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieReviews>() {
+            override fun areItemsTheSame(oldItem: MovieReviews, newItem: MovieReviews): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(
+                oldItem: MovieReviews,
+                newItem: MovieReviews
+            ): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 
     class ViewHolder(private val binding: IReviewsBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -53,16 +68,16 @@ class DetailReviewAdapter(private val dataReviews: List<MovieReviews>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding: IReviewsBinding =
-            IReviewsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return ViewHolder(
+            IReviewsBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binds(dataReviews[position])
-    }
-
-    override fun getItemCount(): Int {
-        return dataReviews.size
+        holder.binds(getItem(position)!!)
     }
 }

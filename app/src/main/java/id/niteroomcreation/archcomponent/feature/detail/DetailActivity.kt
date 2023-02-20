@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -19,6 +20,7 @@ import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movi
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.StatusResponse.*
 import id.niteroomcreation.archcomponent.feature.detail.review.DetailReviewAdapter
 import id.niteroomcreation.archcomponent.util.LogHelper
+import kotlinx.coroutines.launch
 
 /**
  * Created by Septian Adi Wijaya on 09/05/2021.
@@ -45,35 +47,47 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
     override fun initUI() {
 
         supportPostponeEnterTransition()
+        setupAdapter()
         setupObserver()
         setupView()
+    }
+
+    private fun setupAdapter() {
+
+        adapter = DetailReviewAdapter()
+        viewDataBinding.rvReviews.layoutManager = LinearLayoutManager(this)
+        viewDataBinding.rvReviews.adapter = adapter
     }
 
     private fun setupObserver() {
         mViewModel = obtainViewModel(this, DetailViewModel::class.java)
 
+        mViewModel!!.getMovieReview(movies!!.id!!).observe(this, Observer {
 
-        mViewModel!!.respondResultReview.observe(this, Observer {
-            showLoading()
-            when (it.status) {
-                SUCCESS -> {
-                    dismissLoading()
+            LogHelper.j(TAG, it)
 
-                    viewDataBinding.layoutBottomDetailContent.visibility = View.VISIBLE
-
-                    adapter = DetailReviewAdapter(it.body!!.results)
-                    viewDataBinding.rvReviews.layoutManager = LinearLayoutManager(this)
-                    viewDataBinding.rvReviews.adapter = adapter
+            if (it != null)
+                lifecycleScope.launch {
+                    adapter.submitData(it)
                 }
-                EMPTY -> {
-                    showMessage("Review tidak ditemukan")
-                    dismissLoading()
-                }
-                ERROR -> {
-                    showMessage(it.message)
-                    dismissLoading()
-                }
-            }
+//            when (it.status) {
+//                SUCCESS -> {
+//                    dismissLoading()
+//
+//
+//                    viewDataBinding.rvReviews.visibility =
+//                        if (adapter.itemCount > 0) View.VISIBLE else View.GONE
+//
+//                }
+//                EMPTY -> {
+//                    showMessage("Review tidak ditemukan")
+//                    dismissLoading()
+//                }
+//                ERROR -> {
+//                    showMessage(it.message)
+//                    dismissLoading()
+//                }
+//            }
         })
         mViewModel!!.respondResult.observe(this, Observer {
 
@@ -146,8 +160,6 @@ class DetailActivity : BaseActivity<ADetailBinding, DetailViewModel>() {
             viewDataBinding.layoutBottomDetailContent.visibility =
                 if (viewDataBinding.layoutBottomDetailContent.isVisible) View.GONE else View.VISIBLE
 
-            if (viewDataBinding.layoutBottomDetailContent.isVisible)
-                mViewModel!!.getMovieReview(movies!!.id!!)
         }
         viewDataBinding.txtDetailVideo.setOnClickListener {
 

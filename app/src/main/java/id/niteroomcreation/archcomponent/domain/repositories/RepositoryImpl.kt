@@ -2,7 +2,6 @@ package id.niteroomcreation.archcomponent.domain.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
-import id.niteroomcreation.archcomponent.domain.data.remote.response.BaseResponse
 import id.niteroomcreation.archcomponent.domain.data.remote.response.genre.Genre
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.by_id.MoviesById
@@ -21,5 +20,5 @@ interface RepositoryImpl {
 
     suspend fun getGenre(): ApiResponse<Genre>
 
-    suspend fun getReviewByMovie(id: Int): ApiResponse<BaseResponse<MovieReviews>>
+    fun getReviewByMovie(id: Int): LiveData<PagingData<MovieReviews>>
 }
