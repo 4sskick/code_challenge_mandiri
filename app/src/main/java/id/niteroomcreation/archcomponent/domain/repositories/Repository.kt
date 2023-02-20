@@ -9,8 +9,10 @@ import androidx.paging.liveData
 import id.niteroomcreation.archcomponent.domain.data.local.LocalDataSource
 import id.niteroomcreation.archcomponent.domain.data.paging.MoviesPagingSource
 import id.niteroomcreation.archcomponent.domain.data.remote.RemoteRepoDataSource
+import id.niteroomcreation.archcomponent.domain.data.remote.response.BaseResponse
 import id.niteroomcreation.archcomponent.domain.data.remote.response.genre.Genre
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.reviews.MovieReviews
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.ApiResponse
 import id.niteroomcreation.archcomponent.util.AppExecutors
 
@@ -37,6 +39,10 @@ class Repository (
 
     override suspend fun getGenre(): ApiResponse<Genre> {
         return remoteRepoDataSource.getGenre()
+    }
+
+    override suspend fun getReviewByMovie(id: Int): ApiResponse<BaseResponse<MovieReviews>> {
+        return remoteRepoDataSource.getReviewByMovie(id)
     }
 
     companion object {

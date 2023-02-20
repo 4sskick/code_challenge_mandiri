@@ -2,8 +2,11 @@ package id.niteroomcreation.archcomponent.domain.data.remote
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import id.niteroomcreation.archcomponent.domain.data.remote.response.BaseResponse
 import id.niteroomcreation.archcomponent.domain.data.remote.response.genre.Genre
 import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.Movies
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.by_id.MoviesById
+import id.niteroomcreation.archcomponent.domain.data.remote.response.movies.reviews.MovieReviews
 import id.niteroomcreation.archcomponent.domain.data.remote.services.APIConfig
 import id.niteroomcreation.archcomponent.domain.data.remote.services.APIService
 import id.niteroomcreation.archcomponent.domain.data.remote.utils.ApiResponse
@@ -52,10 +55,34 @@ class RemoteRepoDataSource(private val remoteRepo: RemoteRepo, private val execu
         return mData
     }
 
-    suspend fun getMovieById(id:Int):ApiResponse<>
+    suspend fun getMovieById(id: Int): ApiResponse<MoviesById> = try {
+        val response = APIConfig.getApi().getMoviesDetail(id)
+        val result = response.body()
+
+        if (response.isSuccessful && result != null)
+            ApiResponse.success(result)
+        else
+            ApiResponse.error("Response service not available", null)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ApiResponse.error(e.message, null)
+    }
 
     suspend fun getGenre(): ApiResponse<Genre> = try {
         val response = APIConfig.getApi().getGenre()
+        val result = response.body()
+
+        if (response.isSuccessful && result != null)
+            ApiResponse.success(result)
+        else
+            ApiResponse.error("Response service not available", null)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ApiResponse.error(e.message, null)
+    }
+
+    suspend fun getReviewByMovie(movieId: Int): ApiResponse<BaseResponse<MovieReviews>> = try {
+        val response = APIConfig.getApi().getReviewByMovie(movieId)
         val result = response.body()
 
         if (response.isSuccessful && result != null)
